@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { APP_PIPE } from '@nestjs/core';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,8 +20,11 @@ import { APP_PIPE } from '@nestjs/core';
       password: process.env.DB_PASSWORD || 'password',
       database: process.env.DB_NAME || 'chordly',
       entities: [],
-      synchronize: false,
+      synchronize: true,
+      autoLoadEntities: true,
     }),
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
