@@ -10,6 +10,9 @@ import { AuthService } from './auth.service';
 import { SignupDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
 
+import { Public } from './public.decorator';
+
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
