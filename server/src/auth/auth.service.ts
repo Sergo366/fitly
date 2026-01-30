@@ -1,10 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../users/user.entity';
 import { SignupDto } from './dtos/signup.dto';
 import { JwtService } from '@nestjs/jwt';
+
+export interface Tokens {
+  access_token: string;
+  refresh_token: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -13,7 +22,44 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(signupDto: SignupDto): Promise<User> {
+  async getTokens(userId: string, email: string): Promise<Tokens> {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          email,
+        },
+        {
+          secret: process.env.JWT_SECRET || 'secretKey',
+          expiresIn: '20m',
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          email,
+        },
+        {
+          secret: process.env.JWT_REFRESH_SECRET || 'refreshSecretKey',
+          expiresIn: '7d',
+        },
+      ),
+    ]);
+
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
+  }
+
+  async updateRtHash(userId: string, rt: string): Promise<void> {
+    const hash = await bcrypt.hash(rt, 10);
+    await this.usersRepository.update(userId, {
+      hashedRt: hash,
+    });
+  }
+
+  async signup(signupDto: SignupDto): Promise<Tokens> {
     const existingUser = await this.usersRepository.findOne({
       where: { email: signupDto.email },
     });
@@ -29,23 +75,39 @@ export class AuthService {
       password: hashedPassword,
     });
 
-    return this.usersRepository.save(user);
+    const savedUser = await this.usersRepository.save(user);
+    const tokens = await this.getTokens(savedUser.id, savedUser.email);
+    await this.updateRtHash(savedUser.id, tokens.refresh_token);
+    return tokens;
   }
 
   async validateUser(email: string, pass: string): Promise<User | null> {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user && (await bcrypt.compare(pass, user.password))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
       return user;
     }
     return null;
   }
 
-  login(user: User) {
-    const payload = { email: user.email, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async login(user: User): Promise<Tokens> {
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
+  }
+
+  async logout(userId: string): Promise<void> {
+    await this.usersRepository.update(userId, { hashedRt: null });
+  }
+
+  async refreshTokens(userId: string, rt: string): Promise<Tokens> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
+
+    const rtMatches = await bcrypt.compare(rt, user.hashedRt);
+    if (!rtMatches) throw new ForbiddenException('Access Denied');
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRtHash(user.id, tokens.refresh_token);
+    return tokens;
   }
 }

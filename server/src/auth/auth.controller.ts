@@ -5,12 +5,14 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
 
 import { Public } from './public.decorator';
+import { RtGuard } from './rt.guard';
 
 @Public()
 @Controller('auth')
@@ -19,7 +21,7 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Body() body: SignupDto) {
-    return this.authService.signup(body);
+    return await this.authService.signup(body);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -29,6 +31,22 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return this.authService.login(user);
+    return await this.authService.login(user);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Body('userId') userId: string) {
+    return await this.authService.logout(userId);
+  }
+
+  @UseGuards(RtGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refreshTokens(
+    @Body('userId') userId: string,
+    @Body('refreshToken') rt: string,
+  ) {
+    return await this.authService.refreshTokens(userId, rt);
   }
 }

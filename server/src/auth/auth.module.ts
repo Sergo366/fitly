@@ -5,17 +5,11 @@ import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { RtStrategy } from './rt.strategy';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secretKey', // In production use env var
-      signOptions: { expiresIn: '60m' },
-    }),
-  ],
-  providers: [AuthService, JwtStrategy],
+  imports: [UsersModule, PassportModule, JwtModule.register({})],
+  providers: [AuthService, JwtStrategy, RtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

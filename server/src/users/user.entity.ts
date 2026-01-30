@@ -19,6 +19,10 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  @Exclude()
+  hashedRt: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 
