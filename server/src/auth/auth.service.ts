@@ -13,6 +13,10 @@ import { JwtService } from '@nestjs/jwt';
 export interface Tokens {
   access_token: string;
   refresh_token: string;
+  user: {
+    id: string;
+    email: string;
+  };
 }
 
 @Injectable()
@@ -49,6 +53,10 @@ export class AuthService {
     return {
       access_token: at,
       refresh_token: rt,
+      user: {
+        id: userId,
+        email,
+      },
     };
   }
 

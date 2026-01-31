@@ -13,6 +13,8 @@ import { SigninDto } from './dtos/signin.dto';
 
 import { Public } from './public.decorator';
 import { RtGuard } from './rt.guard';
+import { GetCurrentUserId } from './decorators/get-current-user-id.decorator';
+import { GetCurrentUser } from './decorators/get-current-user.decorator';
 
 @Public()
 @Controller('auth')
@@ -36,7 +38,7 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(@Body('userId') userId: string) {
+  async logout(@GetCurrentUserId() userId: string) {
     return await this.authService.logout(userId);
   }
 
@@ -44,8 +46,8 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
-    @Body('userId') userId: string,
-    @Body('refreshToken') rt: string,
+    @GetCurrentUserId() userId: string,
+    @GetCurrentUser('refreshToken') rt: string,
   ) {
     return await this.authService.refreshTokens(userId, rt);
   }
