@@ -16,16 +16,17 @@ import { RtGuard } from './rt.guard';
 import { GetCurrentUserId } from './decorators/get-current-user-id.decorator';
 import { GetCurrentUser } from './decorators/get-current-user.decorator';
 
-@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Public()
   @Post('signup')
   async signup(@Body() body: SignupDto) {
     return await this.authService.signup(body);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(@Body() body: SigninDto) {
@@ -43,7 +44,7 @@ export class AuthController {
   }
 
   @UseGuards(RtGuard)
-  @Post('refresh')
+  @Post('refreshToken')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
     @GetCurrentUserId() userId: string,
