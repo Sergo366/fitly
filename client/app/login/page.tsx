@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const router = useRouter();
 
-  const handleLogin = () => {
-    // Set authentication cookie (temporary implementation)
-    document.cookie = 'auth-token=dummy-token; path=/; max-age=86400'; // 24 hours
+  const handleLogin = async () => {
+    // Note: In a real app, we would call an API here:
+    // const response = await fetch('/auth/signin', { ..., credentials: 'include' });
+    
+    // The server now sets cookies automatically via Set-Cookie headers.
+    // We no longer need to set 'auth-token' manually here.
     
     // Redirect to home page
     router.push('/');

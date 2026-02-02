@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   // Check if user is authenticated by looking for a token in cookies
-  const token = request.cookies.get('auth-token');
+  const access_token = request.cookies.get('access_token');
   
   // If trying to access login page while authenticated, allow it
   if (request.nextUrl.pathname === '/login') {
@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   }
   
   // If not authenticated and not on login page, redirect to login
-  if (!token) {
+  if (!access_token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
   

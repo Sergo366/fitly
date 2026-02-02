@@ -1,13 +1,15 @@
 import {
   Body,
   Controller,
+  Res,
   Post,
   HttpCode,
   HttpStatus,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import type { Response } from 'express';
+import { AuthService, Tokens } from './auth.service';
 import { SignupDto } from './dtos/signup.dto';
 import { SigninDto } from './dtos/signin.dto';
 
@@ -20,27 +22,65 @@ import { GetCurrentUser } from './decorators/get-current-user.decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  private setCookies(res: Response, tokens: Tokens) {
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: false, // Accessible by Next.js middleware
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax', // Use lax for local development
+      maxAge: 15 * 60 * 1000, // 15 mins
+      path: '/',
+    });
+
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true, // Secure
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      path: '/auth/refreshToken', // Only sent to refreshToken route
+    });
+  }
+
+  private clearCookies(res: Response) {
+    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/auth/refreshToken' });
+  }
+
   @Public()
   @Post('signup')
-  async signup(@Body() body: SignupDto) {
-    return await this.authService.signup(body);
+  async signup(
+    @Body() body: SignupDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens = await this.authService.signup(body);
+    this.setCookies(res, tokens);
+    return tokens;
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signin')
-  async signin(@Body() body: SigninDto) {
+  async signin(
+    @Body() body: SigninDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return await this.authService.login(user);
+    const tokens = await this.authService.login(user);
+    this.setCookies(res, tokens);
+    return tokens;
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(@GetCurrentUserId() userId: string) {
-    return await this.authService.logout(userId);
+  async logout(
+    @GetCurrentUserId() userId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.logout(userId);
+    this.clearCookies(res);
+    return { success: true };
   }
 
   @UseGuards(RtGuard)
@@ -49,7 +89,10 @@ export class AuthController {
   async refreshTokens(
     @GetCurrentUserId() userId: string,
     @GetCurrentUser('refreshToken') rt: string,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return await this.authService.refreshTokens(userId, rt);
+    const tokens = await this.authService.refreshTokens(userId, rt);
+    this.setCookies(res, tokens);
+    return tokens;
   }
 }
