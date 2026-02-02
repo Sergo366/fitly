@@ -44,7 +44,7 @@ apiClient.interceptors.response.use(
         // If refresh fails, redirect to login or handle session end
         if (typeof window !== 'undefined') {
           // You could use a state manager or router here
-          window.location.href = '/login';
+          window.location.href = '/auth';
         }
         return Promise.reject(refreshError);
       }

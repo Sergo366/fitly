@@ -12,7 +12,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function LoginPage() {
+export default function AuthPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
