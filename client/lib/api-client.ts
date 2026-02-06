@@ -26,6 +26,11 @@ apiClient.interceptors.response.use(
 
     // If 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Don't attempt refresh or redirect for auth endpoints
+      if (originalRequest.url?.includes('/auth/signin') || originalRequest.url?.includes('/auth/signup')) {
+        return Promise.reject(error);
+      }
+
       originalRequest._retry = true;
 
       try {
@@ -42,7 +47,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         // If refresh fails, redirect to login or handle session end
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && window.location.pathname !== '/auth') {
           // You could use a state manager or router here
           window.location.href = '/auth';
         }
