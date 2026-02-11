@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Music2, Search, Plus, Bell, LogOut, Settings, User } from 'lucide-react';
+import { Shirt, Search, Plus, Bell, LogOut, Settings, User } from 'lucide-react';
 import { Menu as HeadlessMenu, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import Cookies from 'js-cookie';
@@ -40,9 +40,9 @@ export default function Header() {
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="bg-primary/20 p-1.5 rounded-xl group-hover:bg-primary/30 transition-colors">
-                <Music2 className="w-6 h-6 text-primary" />
+                <Shirt className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white hidden sm:block">Chordly</span>
+              <span className="text-xl font-bold tracking-tight text-white hidden sm:block">Fitly</span>
             </Link>
           </div>
 
@@ -83,7 +83,7 @@ export default function Header() {
               </div>
               <input
                 type="text"
-                placeholder="Search songs..."
+                placeholder="Search outfits..."
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 className="block w-full pl-9 pr-4 py-2 bg-slate-800/50 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
@@ -150,7 +150,7 @@ export default function Header() {
                           'flex items-center px-4 py-2.5 text-sm transition-colors'
                         )}
                       >
-                        <Music2 className="mr-3 h-4 w-4 text-slate-400" />
+                        <Shirt className="mr-3 h-4 w-4 text-slate-400" />
                         My Library
                       </Link>
                     )}

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
-import { Mail, Lock, Loader2, Music2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Loader2, Shirt, Eye, EyeOff } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { authApi, AuthCredentials } from '@/api/auth';
 import { AxiosError } from 'axios';
@@ -64,10 +64,10 @@ export default function AuthPage() {
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 flex items-center justify-center gap-3">
-            <Music2 className="w-10 h-10 text-primary animate-pulse" />
-            Chordly
+            <Shirt className="w-10 h-10 text-primary animate-pulse" />
+            Fitly
           </h1>
-          <p className="text-slate-400 font-medium">Elevate your musical journey</p>
+          <p className="text-slate-400 font-medium">Curate your perfect outfit</p>
         </div>
 
         <div className="bg-card backdrop-blur-xl border border-border p-8 rounded-3xl shadow-2xl relative overflow-hidden">
@@ -235,7 +235,7 @@ export default function AuthPage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-slate-500">
-          By continuing, you agree to Chordly&apos;s{' '}
+          By continuing, you agree to Fitly&apos;s{' '}
           <a href="#" className="font-semibold text-slate-400 hover:text-indigo-400 transition-colors">Terms of Service</a> and{' '}
           <a href="#" className="font-semibold text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a>.
         </p>

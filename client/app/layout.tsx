@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Chordly",
-  description: "Elevate your musical journey",
+  title: "Fitly",
+  description: "Curate your perfect outfit",
 };
 
 export const viewport: Viewport = {

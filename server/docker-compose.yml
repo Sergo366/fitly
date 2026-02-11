@@ -1,11 +1,11 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: chordly-postgres
+    container_name: fitly-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: chordly
+      POSTGRES_DB: fitly
     ports:
       - '5432:5432'
     volumes:

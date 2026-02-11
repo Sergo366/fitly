@@ -1,16 +1,17 @@
-# Chordly
+# Fitly
 
-A monorepo containing both client and server applications for Chordly.
+A monorepo containing both client and server applications for Fitly.
 
 ## 📁 Project Structure
 
 ```
-chordly/
+fitly/
 ├── client/          # Next.js frontend application
 ├── server/          # NestJS backend application
 ├── .github/         # GitHub Actions CI/CD workflows
 ├── package.json     # Root workspace configuration
-└── tsconfig.json    # Shared TypeScript configuration
+├── tsconfig.json    # Shared TypeScript configuration
+└── README.md
 ```
 
 ## 🚀 Getting Started
@@ -105,6 +106,7 @@ npm run format
 ## 📦 Client (Next.js)
 
 The client application is built with:
+
 - **Next.js 15** - React framework with App Router
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first styling
@@ -124,6 +126,7 @@ npm run lint       # Run ESLint
 ## 🔧 Server (NestJS)
 
 The server application is built with:
+
 - **NestJS** - Progressive Node.js framework
 - **TypeScript** - Type safety
 - **Jest** - Testing framework

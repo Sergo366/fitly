@@ -1,8 +1,8 @@
 {
-  "name": "chordly",
+  "name": "fitly",
   "version": "1.0.0",
   "private": true,
-  "description": "Chordly monorepo - Next.js client and NestJS server",
+  "description": "Fitly monorepo - Next.js client and NestJS server",
   "workspaces": [
     "client",
     "server"
