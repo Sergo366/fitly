@@ -2,6 +2,20 @@
 
 A monorepo containing both client and server applications for Fitly.
 
+## 🎨 Design System: Midnight Luxe + Violet
+
+Fitly uses a premium, high-fashion aesthetic characterized by deep contrast and a unique signature accent.
+
+- **Primary Background**: `#0C0C0C` (Deep Obsidian)
+- **Primary Accent**: `#D4C4A8` (Champagne Gold)
+- **Secondary Accent**: `#262626` (Brushed Steel)
+- **Typography**: `#F5F5F7` (Platinum White)
+- **Signature Stroke**: `#A855F7` (Electric Violet)
+  - Applied as a **1px bottom border** on the `Header`
+  - Applied as a **1px top border** on primary `Cards` (e.g., Auth forms)
+
+This combination represents the core brand identity: luxury, modern technology, and high-fashion "couture" touches.
+
 ## 📁 Project Structure
 
 ```

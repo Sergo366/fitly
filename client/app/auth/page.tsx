@@ -58,24 +58,24 @@ export default function AuthPage() {
       {/* Background decoration */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-white/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="w-full max-w-md z-10">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white mb-2 flex items-center justify-center gap-3">
+          <h1 className="text-4xl font-extrabold tracking-tight text-foreground mb-2 flex items-center justify-center gap-3">
             <Shirt className="w-10 h-10 text-primary animate-pulse" />
             Fitly
           </h1>
-          <p className="text-slate-400 font-medium">Curate your perfect outfit</p>
+          <p className="text-stone-500 font-medium">Curate your perfect outfit</p>
         </div>
 
         <div className="bg-card backdrop-blur-xl border border-border p-8 rounded-3xl shadow-2xl relative overflow-hidden">
           {/* Animated border line at top */}
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#A855F7]/30 to-transparent opacity-50" />
 
           <TabGroup>
-            <TabList className="flex p-1.5 space-x-1 bg-slate-800/50 rounded-2xl mb-8 border border-white/5">
+            <TabList className="flex p-1.5 space-x-1 bg-white/5 rounded-2xl mb-8 border border-white/5">
               {['Login', 'Register'].map((category) => (
                 <Tab
                   key={category}
@@ -83,8 +83,8 @@ export default function AuthPage() {
                     classNames(
                       'w-full py-3 text-sm font-semibold leading-5 rounded-xl transition-all duration-200 outline-none',
                       selected
-                        ? 'bg-primary text-white shadow-lg shadow-primary/25 ring-1 ring-white/10'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                        ? 'bg-primary text-black shadow-lg shadow-primary/25 ring-1 ring-white/10'
+                        : 'text-stone-500 hover:text-foreground hover:bg-white/5'
                     )
                   }
                 >
@@ -103,7 +103,7 @@ export default function AuthPage() {
                     <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Email Address</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        <Mail className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
                       </div>
                       <input
                         type="email"
@@ -111,7 +111,7 @@ export default function AuthPage() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="block w-full pl-11 pr-4 py-3.5 bg-slate-800/50 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-indigo-500/40 transition-all"
+                        className="block w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-foreground placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
                         placeholder="you@example.com"
                       />
                     </div>
@@ -121,7 +121,7 @@ export default function AuthPage() {
                     <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Password</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        <Lock className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
                       </div>
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -129,7 +129,7 @@ export default function AuthPage() {
                         required
                         value={formData.password}
                         onChange={handleChange}
-                        className="block w-full pl-11 pr-12 py-3.5 bg-slate-800/50 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-indigo-500/40 transition-all"
+                        className="block w-full pl-11 pr-12 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-foreground placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
                         placeholder="••••••••"
                       />
                       <button
@@ -151,7 +151,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-slate-900 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/25"
+                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/25"
                   >
                     {isLoading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -168,10 +168,10 @@ export default function AuthPage() {
                   className="space-y-5"
                 >
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Email Address</label>
+                    <label className="block text-sm font-medium text-stone-400 mb-2 ml-1">Email Address</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        <Mail className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
                       </div>
                       <input
                         type="email"
@@ -179,17 +179,17 @@ export default function AuthPage() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="block w-full pl-11 pr-4 py-3.5 bg-slate-800/50 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-indigo-500/40 transition-all"
+                        className="block w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-foreground placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
                         placeholder="you@example.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Password</label>
+                    <label className="block text-sm font-medium text-stone-400 mb-2 ml-1">Password</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                        <Lock className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
                       </div>
                       <input
                         type={showPassword ? 'text' : 'password'}
@@ -198,13 +198,13 @@ export default function AuthPage() {
                         minLength={6}
                         value={formData.password}
                         onChange={handleChange}
-                        className="block w-full pl-11 pr-12 py-3.5 bg-slate-800/50 border border-white/10 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-indigo-500/40 transition-all"
+                        className="block w-full pl-11 pr-12 py-3.5 bg-white/5 border border-white/5 rounded-2xl text-foreground placeholder-stone-600 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
                         placeholder="Min 6 characters"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-stone-500 hover:text-stone-300 transition-colors"
                       >
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
@@ -220,7 +220,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-slate-900 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/25"
+                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/25"
                   >
                     {isLoading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -234,10 +234,10 @@ export default function AuthPage() {
           </TabGroup>
         </div>
 
-        <p className="mt-8 text-center text-sm text-slate-500">
+        <p className="mt-8 text-center text-sm text-stone-600">
           By continuing, you agree to Fitly&apos;s{' '}
-          <a href="#" className="font-semibold text-slate-400 hover:text-indigo-400 transition-colors">Terms of Service</a> and{' '}
-          <a href="#" className="font-semibold text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a>.
+          <a href="#" className="font-semibold text-stone-400 hover:text-primary transition-colors">Terms of Service</a> and{' '}
+          <a href="#" className="font-semibold text-stone-400 hover:text-primary transition-colors">Privacy Policy</a>.
         </p>
       </div>
     </div>

@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --secondary: #3b82f6;
-  --card: rgba(15, 23, 42, 0.5);
-  --border: rgba(255, 255, 255, 0.1);
+  --background: #0C0C0C;
+  --foreground: #F5F5F7;
+  --primary: #D4C4A8;
+  --primary-hover: #B8A88B;
+  --secondary: #262626;
+  --accent: #A855F7;
+  --accent-glow: rgba(168, 85, 247, 0.4);
+  --card: rgba(18, 18, 18, 0.7);
+  --border: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
@@ -39,7 +41,7 @@ body {
 
 /* Custom selection color to match theme */
 ::selection {
-  background-color: rgba(79, 70, 229, 0.3);
-  color: white;
+  background-color: rgba(212, 196, 168, 0.3);
+  color: #F5F5F7;
 }
 
