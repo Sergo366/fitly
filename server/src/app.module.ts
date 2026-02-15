@@ -6,7 +6,11 @@ import { AppService } from './app.service';
 import { APP_PIPE, APP_GUARD } from '@nestjs/core';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ClothesModule } from './clothes/clothes.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -26,6 +30,12 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     }),
     UsersModule,
     AuthModule,
+    ClothesModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+    AiModule,
   ],
   controllers: [AppController],
   providers: [

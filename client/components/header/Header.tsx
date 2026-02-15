@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Shirt, Search, Plus, Bell, LogOut, Settings, User } from 'lucide-react';
+import { Shirt, LogOut, Settings, User, Plus } from 'lucide-react';
 import { Menu as HeadlessMenu, Transition } from '@headlessui/react';
 import { Fragment, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
@@ -94,6 +94,9 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
+            <button className="p-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center">
+              <Plus className="w-5 h-5" />
+            </button>
             {/* Profile Dropdown */}
             <HeadlessMenu as="div" className="relative">
               <HeadlessMenu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-slate-900 transition-all p-0.5 border border-white/10 hover:border-primary/50">

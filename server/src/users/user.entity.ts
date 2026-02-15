@@ -5,7 +5,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Clothing } from '../clothes/clothing.entity';
 
 @Entity()
 export class User {
@@ -28,4 +30,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Clothing, (clothing) => clothing.user)
+  clothes: Clothing[];
 }
