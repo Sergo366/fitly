@@ -94,9 +94,9 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
-            <button className="p-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center">
+            <Link href="/add-clothes" className="p-2 bg-primary cursor-pointer text-white rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center">
               <Plus className="w-5 h-5" />
-            </button>
+            </Link>
             {/* Profile Dropdown */}
             <HeadlessMenu as="div" className="relative">
               <HeadlessMenu.Button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-slate-900 transition-all p-0.5 border border-white/10 hover:border-primary/50">

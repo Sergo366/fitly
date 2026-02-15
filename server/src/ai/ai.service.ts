@@ -9,7 +9,11 @@ export class AiService {
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('GOOGLE_API_KEY');
     if (!apiKey) {
-      console.warn('GOOGLE_API_KEY is not defined in environment variables');
+      console.error('GOOGLE_API_KEY is not defined in environment variables');
+    } else {
+      console.log(
+        `GOOGLE_API_KEY loaded successfully (length: ${apiKey.length})`,
+      );
     }
     this.genAI = new GoogleGenerativeAI(apiKey || 'dummy_key');
   }
@@ -17,30 +21,47 @@ export class AiService {
   async getClothingTicker(buffer: Buffer, mimeType: string): Promise<string> {
     try {
       const model = this.genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash-001',
       });
 
       const base64Image = buffer.toString('base64');
 
       const prompt =
-        "Identify this clothing item and provide a short, unique ticker symbol for it (e.g., 'WHT-TSHIRT', 'BLU-JEANS'). Return ONLY the ticker symbol.";
+        'Identify this clothing item from the tag. Provide a unique search ticker in the format: [Brand]-[ArticleNumber]-[ColorCode]. Use the most specific IDs found on the label (like Index No. or Reference). Return ONLY the ticker symbol.';
 
-      const result = await model.generateContent([
-        prompt,
-        {
-          inlineData: {
-            data: base64Image,
-            mimeType: mimeType,
+      const result = await model.generateContent({
+        contents: [
+          {
+            role: 'user',
+            parts: [
+              { text: prompt },
+              {
+                inlineData: {
+                  data: base64Image,
+                  mimeType,
+                },
+              },
+            ],
           },
+        ],
+        generationConfig: {
+          maxOutputTokens: 20, // Ограничение ускоряет "завершение" ответа
+          temperature: 0, // Нулевая температура делает ответ быстрее и точнее
         },
-      ]);
+      });
 
       const response = result.response;
-      return response.text().trim();
-    } catch (error) {
-      console.error('Gemini API Error:', error);
+      const text = response.text().trim();
+      console.log('Gemini Analysis Result:', text);
+      return text;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      console.error('Gemini API Error details:', {
+        error,
+      });
       throw new InternalServerErrorException(
-        'Failed to analyze image with Gemini',
+        `Failed to analyze image with Gemini: ${errorMessage}`,
       );
     }
   }

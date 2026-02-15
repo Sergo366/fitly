@@ -1,0 +1,268 @@
+"use client";
+
+import React, { useState, useCallback } from 'react';
+import { Upload, X, Image as ImageIcon, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAddClothing } from '@/hooks/use-clothes';
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+export default function AddClothesPage() {
+    const [file, setFile] = useState<File | null>(null);
+    const [preview, setPreview] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+
+    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess, error: uploadError } = useAddClothing();
+
+    const validateFile = (file: File) => {
+        setError(null);
+        if (!file.type.startsWith('image/')) {
+            setError('Please select an image.');
+            return false;
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            setError('File size should not exceed 10 MB.');
+            return false;
+        }
+        return true;
+    };
+
+    const handleFile = useCallback((selectedFile: File) => {
+        if (validateFile(selectedFile)) {
+            setFile(selectedFile);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreview(reader.result as string);
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+    }, []);
+
+    const onDrop = useCallback((e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const droppedFile = e.dataTransfer.files[0];
+        if (droppedFile) handleFile(droppedFile);
+    }, [handleFile]);
+
+    const onDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+    };
+
+    const onDragLeave = () => {
+        setIsDragging(false);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0];
+        if (selectedFile) handleFile(selectedFile);
+    };
+
+    const removeFile = () => {
+        setFile(null);
+        setPreview(null);
+        setError(null);
+    };
+
+    const compressImage = (file: File): Promise<File> => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+                    
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const compressedFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now(),
+                            });
+                            resolve(compressedFile);
+                        } else {
+                            resolve(file);
+                        }
+                    }, 'image/jpeg', 0.8);
+                };
+            };
+        });
+    };
+
+    const handleUpload = async () => {
+        if (!file) return;
+
+        console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+        const compressedFile = await compressImage(file);
+        console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
+
+        addClothing(compressedFile, {
+            onSuccess: () => {
+                // setTimeout(() => {
+                //     router.push('/(main)/top');
+                // }, 2000);
+            }
+        });
+    };
+
+    // Use either local validation error or mutation error
+    const getErrorMessage = (err: unknown) => {
+        if (!err) return null;
+        if (typeof err === 'object' && 'response' in err) {
+            const axiosError = err as { response: { data: { message?: string } } };
+            return axiosError.response?.data?.message || 'Upload failed. Please try again.';
+        }
+        return 'Upload failed. Please try again.';
+    };
+
+    const displayError = error || getErrorMessage(uploadError);
+
+    return (
+        <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="space-y-2 text-center">
+                <h1 className="text-4xl font-light tracking-tight text-foreground sm:text-5xl">
+                    Add clothes
+                </h1>
+                <p className="text-zinc-400">Upload a photo of your wardrobe item</p>
+            </div>
+
+
+            <div className="relative">
+                {!preview ? (
+                    <div
+                        onDragOver={onDragOver}
+                        onDragLeave={onDragLeave}
+                        onDrop={onDrop}
+                        className={`
+                            relative group cursor-pointer
+                            border-2 border-dashed rounded-3xl p-12
+                            flex flex-col items-center justify-center gap-4
+                            transition-all duration-300 ease-out
+                            ${isDragging 
+                                ? 'border-accent bg-accent/5 scale-[1.02] shadow-[0_0_30px_rgba(168,85,247,0.15)]' 
+                                : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50'}
+                        `}
+                        onClick={() => document.getElementById('file-upload')?.click()}
+                    >
+                        <input
+                            id="file-upload"
+                            type="file"
+                            className="hidden"
+                            accept="image/*"
+                            onChange={handleInputChange}
+                        />
+                        
+                        <div className={`
+                            w-16 h-16 rounded-2xl flex items-center justify-center
+                            bg-zinc-900 border border-zinc-800
+                            transition-all duration-300 group-hover:scale-110
+                            ${isDragging ? 'bg-accent/10 border-accent/30 text-accent' : 'text-zinc-400'}
+                        `}>
+                            <Upload className="w-8 h-8" />
+                        </div>
+                        
+                        <div className="text-center space-y-1">
+                            <p className="text-foreground font-medium">
+                                Click or drag and drop a photo
+                            </p>
+                            <p className="text-sm text-zinc-500">
+                                PNG, JPG up to 10 MB
+                            </p>
+                        </div>
+
+                        {isDragging && (
+                            <div className="absolute inset-0 rounded-3xl pointer-events-none border-2 border-accent animate-pulse" />
+                        )}
+                    </div>
+                ) : (
+                    <div className="relative group rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900/50 aspect-square sm:aspect-video flex items-center justify-center">
+                        <img 
+                            src={preview} 
+                            alt="Preview" 
+                            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                        />
+                        
+                        <div className="absolute right-0 top-0 bg-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2">
+                            <button
+                                onClick={removeFile}
+                                className="p-3 cursor-pointer bg-red-500/20 hover:bg-red-500/40 text-red-500 rounded-full transition-colors backdrop-blur-md"
+                                title="Remove"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {displayError && (
+                <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm">{displayError}</p>
+                </div>
+            )}
+
+            {uploadSuccess && (
+                <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm">Clothes added successfully! Redirecting...</p>
+                </div>
+            )}
+
+            <button
+                onClick={handleUpload}
+                disabled={!file || isUploading || uploadSuccess}
+                className={`
+                    w-full py-4 rounded-2xl font-semibold text-lg transition-all duration-300
+                    flex items-center justify-center gap-2 cursor-pointer
+                    ${!file || isUploading || uploadSuccess
+                        ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                        : 'bg-primary text-background hover:bg-primary-hover active:scale-[0.98] shadow-lg shadow-primary/10'
+                    }
+                `}
+            >
+                {isUploading ? (
+                    <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Updating wardrobe...
+                    </>
+                ) : uploadSuccess ? (
+                    <>
+                        <CheckCircle2 className="w-5 h-5" />
+                        Done
+                    </>
+                ) : (
+                    <>
+                        <ImageIcon className="w-5 h-5" />
+                        Add to wardrobe
+                    </>
+                )}
+            </button>
+        </div>
+    );
+}
