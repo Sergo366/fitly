@@ -8,8 +8,8 @@
     "server"
   ],
   "scripts": {
-    "dev:client": "npm run dev --workspace=client",
-    "dev:server": "npm run start:dev --workspace=server",
+    "dev:client": "concurrently \"cd client && npx next dev\"",
+    "dev:server": "concurrently \"cd server && npx nest start --watch\"",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build": "npm run build --workspaces",
     "build:client": "npm run build --workspace=client",
@@ -18,6 +18,9 @@
     "test:client": "npm run test --workspace=client",
     "test:server": "npm run test --workspace=server",
     "lint": "npm run lint --workspaces",
+    "db:dev:up": "cd server && docker-compose up -d postgres",
+    "db:dev:down": "cd server && docker-compose down",
+    "db:dev:restart": "cd server && docker-compose restart postgres",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   },
   "devDependencies": {
