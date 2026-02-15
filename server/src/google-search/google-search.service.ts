@@ -6,8 +6,8 @@ import {
 } from './interfaces/search-response.interface';
 
 @Injectable()
-export class SearchService {
-  private readonly logger = new Logger(SearchService.name);
+export class GoogleSearchService {
+  private readonly logger = new Logger(GoogleSearchService.name);
   private readonly apiKey: string;
 
   constructor(private readonly configService: ConfigService) {

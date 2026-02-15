@@ -8,9 +8,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ClothesModule } from './clothes/clothes.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { AiModule } from './ai/ai.module';
+import { GoogleSearchModule } from './google-search/google-search.module';
 
 @Module({
   imports: [
@@ -31,11 +30,8 @@ import { AiModule } from './ai/ai.module';
     UsersModule,
     AuthModule,
     ClothesModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
-    }),
     AiModule,
+    GoogleSearchModule,
   ],
   controllers: [AppController],
   providers: [

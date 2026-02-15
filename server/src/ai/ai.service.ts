@@ -27,7 +27,7 @@ export class AiService {
       const base64Image = buffer.toString('base64');
 
       const prompt =
-        'Identify this clothing item from the tag. Provide a unique search ticker in the format: [Brand]-[ArticleNumber]-[ColorCode]. Use the most specific IDs found on the label (like Index No. or Reference). Return ONLY the ticker symbol.';
+        'Identify this clothing item from the tag. Provide a unique google-search ticker in the format: [Brand]-[ArticleNumber]-[ColorCode]. Use the most specific IDs found on the label (like Index No. or Reference). Return ONLY the ticker symbol.';
 
       const result = await model.generateContent({
         contents: [
@@ -45,15 +45,12 @@ export class AiService {
           },
         ],
         generationConfig: {
-          maxOutputTokens: 20, // Ограничение ускоряет "завершение" ответа
+          maxOutputTokens: 40, // Ограничение ускоряет "завершение" ответа
           temperature: 0, // Нулевая температура делает ответ быстрее и точнее
         },
       });
 
-      const response = result.response;
-      const text = response.text().trim();
-      console.log('Gemini Analysis Result:', text);
-      return text;
+      return result.response.text().trim();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';

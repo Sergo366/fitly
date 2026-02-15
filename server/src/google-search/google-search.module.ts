@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { SearchService } from './search.service';
+import { GoogleSearchService } from './google-search.service';
 
 @Module({
-  providers: [SearchService],
-  exports: [SearchService],
+  providers: [GoogleSearchService],
+  exports: [GoogleSearchService],
 })
-export class SearchModule {}
+export class GoogleSearchModule {}

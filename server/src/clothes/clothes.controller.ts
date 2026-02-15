@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ClothesService } from './clothes.service';
-import { CreateClothingDto } from './dtos/create-clothing.dto';
 import { UpdateClothingDto } from './dtos/update-clothing.dto';
 import { GetCurrentUserId } from '../auth/decorators/get-current-user-id.decorator';
 import { AiService } from '../ai/ai.service';
@@ -27,12 +26,8 @@ export class ClothesController {
 
   @Post()
   @UseInterceptors(FileInterceptor('image'))
-  async create(
-    @GetCurrentUserId() userId: string,
-    @Body() createClothingDto: CreateClothingDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.clothesService.create(userId, createClothingDto, file);
+  async create(@UploadedFile() file: Express.Multer.File) {
+    return this.clothesService.create(file);
   }
 
   @Get()

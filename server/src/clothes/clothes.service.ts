@@ -3,9 +3,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Clothing } from './clothing.entity';
-import { CreateClothingDto } from './dtos/create-clothing.dto';
 import { UpdateClothingDto } from './dtos/update-clothing.dto';
 import { AiService } from '../ai/ai.service';
+import { GoogleSearchService } from '../google-search/google-search.service';
+import { SerperImageResult } from 'src/google-search/interfaces/search-response.interface';
 
 @Injectable()
 export class ClothesService {
@@ -13,13 +14,10 @@ export class ClothesService {
     @InjectRepository(Clothing)
     private readonly clothesRepository: Repository<Clothing>,
     private readonly aiService: AiService,
+    private readonly searchService: GoogleSearchService,
   ) {}
 
-  async create(
-    userId: string,
-    dto: CreateClothingDto,
-    file?: Express.Multer.File,
-  ): Promise<any> {
+  async create(file?: Express.Multer.File): Promise<SerperImageResult[]> {
     let ticker = undefined;
 
     if (file) {
@@ -29,12 +27,12 @@ export class ClothesService {
       );
     }
 
-    // const clothing = this.clothesRepository.create({
-    //   ...dto,
-    //   userId,
-    //   ticker,
-    // });
-    return ticker;
+    let searchResults: SerperImageResult[] = [];
+    if (ticker) {
+      searchResults = await this.searchService.findImages(ticker);
+    }
+
+    return searchResults;
   }
 
   async findAll(userId: string): Promise<Clothing[]> {
