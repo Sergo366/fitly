@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useCallback } from 'react';
-import { Upload, X, Image as ImageIcon, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Upload, X, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAddClothing } from '@/hooks/use-clothes';
+import { useToast } from '@/hooks/use-toast/use-toast';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -11,23 +11,22 @@ export default function AddClothesPage() {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    const { toast } = useToast();
 
-    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess, error: uploadError } = useAddClothing();
+    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
 
-    const validateFile = (file: File) => {
-        setError(null);
+
+    const validateFile = useCallback((file: File) => {
         if (!file.type.startsWith('image/')) {
-            setError('Please select an image.');
+            toast.error('Please select an image.');
             return false;
         }
         if (file.size > MAX_FILE_SIZE) {
-            setError('File size should not exceed 10 MB.');
+            toast.error('File size should not exceed 10 MB.');
             return false;
         }
         return true;
-    };
+    }, [toast]);
 
     const handleFile = useCallback((selectedFile: File) => {
         if (validateFile(selectedFile)) {
@@ -38,7 +37,7 @@ export default function AddClothesPage() {
             };
             reader.readAsDataURL(selectedFile);
         }
-    }, []);
+    }, [validateFile]);
 
     const onDrop = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -64,7 +63,6 @@ export default function AddClothesPage() {
     const removeFile = () => {
         setFile(null);
         setPreview(null);
-        setError(null);
     };
 
     const compressImage = (file: File): Promise<File> => {
@@ -123,24 +121,22 @@ export default function AddClothesPage() {
 
         addClothing(compressedFile, {
             onSuccess: () => {
-                // setTimeout(() => {
-                //     router.push('/(main)/top');
-                // }, 2000);
+                toast.success('Clothes added successfully!');
+            },
+            onError: (err) => {
+                toast.error(getErrorMessage(err) || 'Failed to upload clothes');
             }
         });
     };
 
-    // Use either local validation error or mutation error
     const getErrorMessage = (err: unknown) => {
         if (!err) return null;
         if (typeof err === 'object' && 'response' in err) {
             const axiosError = err as { response: { data: { message?: string } } };
             return axiosError.response?.data?.message || 'Upload failed. Please try again.';
         }
-        return 'Upload failed. Please try again.';
+        return err instanceof Error ? err.message : String(err);
     };
-
-    const displayError = error || getErrorMessage(uploadError);
 
     return (
         <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -220,19 +216,6 @@ export default function AddClothesPage() {
                 )}
             </div>
 
-            {displayError && (
-                <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    <p className="text-sm">{displayError}</p>
-                </div>
-            )}
-
-            {uploadSuccess && (
-                <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/20 text-green-400 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                    <p className="text-sm">Clothes added successfully! Redirecting...</p>
-                </div>
-            )}
 
             <button
                 onClick={handleUpload}
