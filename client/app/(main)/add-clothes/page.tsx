@@ -13,8 +13,7 @@ export default function AddClothesPage() {
     const [isDragging, setIsDragging] = useState(false);
     const { toast } = useToast();
 
-    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
-
+    const { data, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
 
     const validateFile = useCallback((file: File) => {
         if (!file.type.startsWith('image/')) {
@@ -65,61 +64,10 @@ export default function AddClothesPage() {
         setPreview(null);
     };
 
-    const compressImage = (file: File): Promise<File> => {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target?.result as string;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1200;
-                    const MAX_HEIGHT = 1200;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, width, height);
-                    
-                    canvas.toBlob((blob) => {
-                        if (blob) {
-                            const compressedFile = new File([blob], file.name, {
-                                type: 'image/jpeg',
-                                lastModified: Date.now(),
-                            });
-                            resolve(compressedFile);
-                        } else {
-                            resolve(file);
-                        }
-                    }, 'image/jpeg', 0.8);
-                };
-            };
-        });
-    };
-
     const handleUpload = async () => {
         if (!file) return;
 
-        console.log('Original size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
-        const compressedFile = await compressImage(file);
-        console.log('Compressed size:', (compressedFile.size / 1024 / 1024).toFixed(2), 'MB');
-
-        addClothing(compressedFile, {
+        addClothing(file, {
             onSuccess: () => {
                 toast.success('Clothes added successfully!');
             },
@@ -146,7 +94,6 @@ export default function AddClothesPage() {
                 </h1>
                 <p className="text-zinc-400">Upload a photo of your wardrobe item</p>
             </div>
-
 
             <div className="relative">
                 {!preview ? (
@@ -197,7 +144,7 @@ export default function AddClothesPage() {
                     </div>
                 ) : (
                     <div className="relative group rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900/50 aspect-square sm:aspect-video flex items-center justify-center">
-                        <img 
+                        <img
                             src={preview} 
                             alt="Preview" 
                             className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
@@ -215,7 +162,6 @@ export default function AddClothesPage() {
                     </div>
                 )}
             </div>
-
 
             <button
                 onClick={handleUpload}
