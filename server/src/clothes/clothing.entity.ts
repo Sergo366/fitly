@@ -14,19 +14,10 @@ export class Clothing {
   id: string;
 
   @Column()
-  name: string;
+  title: string;
 
   @Column()
   type: string;
-
-  @Column({ nullable: true })
-  color: string;
-
-  @Column({ nullable: true })
-  size: string;
-
-  @Column({ nullable: true })
-  brand: string;
 
   @Column({ nullable: true })
   imageUrl: string;

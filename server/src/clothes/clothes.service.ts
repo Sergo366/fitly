@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Clothing } from './clothing.entity';
 import { UpdateClothingDto } from './dtos/update-clothing.dto';
+import { CreateClothingDto } from './dtos/create-clothing.dto';
 import { AiService } from '../ai/ai.service';
 import { GoogleSearchService } from '../google-search/google-search.service';
 import { SerperImageResult } from 'src/google-search/interfaces/search-response.interface';
@@ -38,6 +39,18 @@ export class ClothesService {
       ticker,
       searchResults,
     };
+  }
+
+  async saveClothes(dto: CreateClothingDto, userId: string): Promise<Clothing> {
+    const clothing = this.clothesRepository.create({
+      title: dto.title,
+      type: dto.type,
+      imageUrl: dto.imageUrl,
+      ticker: dto.ticker,
+      userId,
+    });
+
+    return this.clothesRepository.save(clothing);
   }
 
   async findAll(userId: string): Promise<Clothing[]> {

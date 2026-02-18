@@ -1,27 +1,15 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateClothingDto {
   @IsString()
-  @IsOptional()
-  name?: string;
+  title: string;
 
   @IsString()
-  @IsOptional()
-  type?: string;
+  imageUrl: string;
 
   @IsString()
-  @IsOptional()
-  color?: string;
+  type: string;
 
   @IsString()
-  @IsOptional()
-  size?: string;
-
-  @IsString()
-  @IsOptional()
-  brand?: string;
-
-  @IsString()
-  @IsOptional()
-  imageUrl?: string;
+  ticker: string;
 }
