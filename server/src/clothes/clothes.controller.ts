@@ -15,19 +15,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ClothesService } from './clothes.service';
 import { UpdateClothingDto } from './dtos/update-clothing.dto';
 import { GetCurrentUserId } from '../auth/decorators/get-current-user-id.decorator';
-import { AiService } from '../ai/ai.service';
 
 @Controller('clothes')
 export class ClothesController {
-  constructor(
-    private readonly clothesService: ClothesService,
-    private readonly aiService: AiService,
-  ) {}
+  constructor(private readonly clothesService: ClothesService) {}
 
-  @Post()
+  @Post('/get-clothes-from-image')
   @UseInterceptors(FileInterceptor('image'))
-  async create(@UploadedFile() file: Express.Multer.File) {
-    return this.clothesService.create(file);
+  async getClothes(@UploadedFile() file: Express.Multer.File) {
+    return this.clothesService.getClothesFromImage(file);
   }
 
   @Get()

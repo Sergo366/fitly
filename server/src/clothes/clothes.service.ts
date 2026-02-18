@@ -17,8 +17,10 @@ export class ClothesService {
     private readonly searchService: GoogleSearchService,
   ) {}
 
-  async create(file?: Express.Multer.File): Promise<SerperImageResult[]> {
-    let ticker = undefined;
+  async getClothesFromImage(
+    file?: Express.Multer.File,
+  ): Promise<{ ticker: string; searchResults: SerperImageResult[] }> {
+    let ticker = '';
 
     if (file) {
       ticker = await this.aiService.getClothingTicker(
@@ -32,7 +34,10 @@ export class ClothesService {
       searchResults = await this.searchService.findImages(ticker);
     }
 
-    return searchResults;
+    return {
+      ticker,
+      searchResults,
+    };
   }
 
   async findAll(userId: string): Promise<Clothing[]> {

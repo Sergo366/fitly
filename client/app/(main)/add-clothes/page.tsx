@@ -1,9 +1,16 @@
 "use client";
 
 import React, { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAddClothing } from '@/hooks/use-clothes';
 import { useToast } from '@/hooks/use-toast/use-toast';
+const AddClothesModal = dynamic(
+    () => import('@/components/modals/AddClothesModal/AddClothesModal').then(mod => mod.AddClothesModal),
+    { ssr: false }
+);
+import { mockResponse } from '@/mock/const';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -11,10 +18,15 @@ export default function AddClothesPage() {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { toast } = useToast();
 
-    const { data, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
+    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
 
+    const data = {
+        searchResults: mockResponse,
+        ticker: '4444',
+    }
     const validateFile = useCallback((file: File) => {
         if (!file.type.startsWith('image/')) {
             toast.error('Please select an image.');
@@ -69,7 +81,8 @@ export default function AddClothesPage() {
 
         addClothing(file, {
             onSuccess: () => {
-                toast.success('Clothes added successfully!');
+                toast.success('Clothes analyzed successfully! Please select a photo.');
+                setIsModalOpen(true);
             },
             onError: (err) => {
                 toast.error(getErrorMessage(err) || 'Failed to upload clothes');
@@ -144,10 +157,12 @@ export default function AddClothesPage() {
                     </div>
                 ) : (
                     <div className="relative group rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-900/50 aspect-square sm:aspect-video flex items-center justify-center">
-                        <img
+                        <Image
                             src={preview} 
                             alt="Preview" 
-                            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                            fill
+                            unoptimized
+                            className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                         />
                         
                         <div className="absolute right-0 top-0 bg-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2">
@@ -192,6 +207,13 @@ export default function AddClothesPage() {
                     </>
                 )}
             </button>
+
+            <AddClothesModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)} 
+                searchResults={data?.searchResults || []}
+                ticker={data?.ticker}
+            />
         </div>
     );
 }

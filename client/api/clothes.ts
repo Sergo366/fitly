@@ -1,5 +1,20 @@
 import apiClient from '@/lib/api-client';
 
+export interface SerperImageResult {
+    title: string;
+    imageUrl: string;
+    imageWidth: number;
+    imageHeight: number;
+    thumbnailUrl: string;
+    thumbnailWidth: number;
+    thumbnailHeight: number;
+    source: string;
+    domain: string;
+    link: string;
+    googleUrl: string;
+    position: number;
+}
+
 export interface Clothing {
     id: string;
     name?: string;
@@ -8,6 +23,8 @@ export interface Clothing {
     size?: string;
     brand?: string;
     imageUrl?: string;
+    ticker?: string;
+    searchResults?: SerperImageResult[];
 }
 
 export const clothesApi = {
@@ -15,10 +32,8 @@ export const clothesApi = {
       const formData = new FormData();
       formData.append('image', file);
 
-      const response = await apiClient.post<Clothing>('/clothes', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+      const response = await apiClient.post<Clothing>('/clothes/get-clothes-from-image', formData, {
+            headers: {'Content-Type': 'multipart/form-data'},
         });
         return response.data;
     },
