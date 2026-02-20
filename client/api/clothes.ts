@@ -18,7 +18,10 @@ export interface SerperImageResult {
 export interface Clothing {
     id: string;
     name?: string;
+    title?: string;
     type?: string;
+    category?: string;
+    seasons?: string[];
     color?: string;
     size?: string;
     brand?: string;
@@ -40,6 +43,11 @@ export const clothesApi = {
 
     findAll: async (): Promise<Clothing[]> => {
         const response = await apiClient.get<Clothing[]>('/clothes');
+        return response.data;
+    },
+
+    save: async (data: any): Promise<Clothing> => {
+        const response = await apiClient.post<Clothing>('/clothes/save-clothes', data);
         return response.data;
     },
 };

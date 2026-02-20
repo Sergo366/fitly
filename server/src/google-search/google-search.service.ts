@@ -36,7 +36,7 @@ export class GoogleSearchService {
         },
         body: JSON.stringify({
           q: query,
-          num: 20,
+          num: 30,
         }),
       });
 

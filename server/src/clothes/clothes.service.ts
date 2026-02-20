@@ -45,6 +45,8 @@ export class ClothesService {
     const clothing = this.clothesRepository.create({
       title: dto.title,
       type: dto.type,
+      category: dto.category,
+      seasons: dto.seasons,
       imageUrl: dto.imageUrl,
       ticker: dto.ticker,
       userId,

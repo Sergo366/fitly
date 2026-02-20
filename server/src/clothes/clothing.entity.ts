@@ -20,6 +20,12 @@ export class Clothing {
   type: string;
 
   @Column({ nullable: true })
+  category: string;
+
+  @Column('simple-array', { nullable: true })
+  seasons: string[];
+
+  @Column({ nullable: true })
   imageUrl: string;
 
   @Column({ nullable: true })

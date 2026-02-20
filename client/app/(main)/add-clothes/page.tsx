@@ -6,11 +6,11 @@ import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAddClothing } from '@/hooks/use-clothes';
 import { useToast } from '@/hooks/use-toast/use-toast';
+import { mockResponse } from '@/mock/const';
 const AddClothesModal = dynamic(
     () => import('@/components/modals/AddClothesModal/AddClothesModal').then(mod => mod.AddClothesModal),
     { ssr: false }
 );
-import { mockResponse } from '@/mock/const';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -21,12 +21,8 @@ export default function AddClothesPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { toast } = useToast();
 
-    const { mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
+    const { data: clothesData, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
 
-    const data = {
-        searchResults: mockResponse,
-        ticker: '4444',
-    }
     const validateFile = useCallback((file: File) => {
         if (!file.type.startsWith('image/')) {
             toast.error('Please select an image.');
@@ -211,8 +207,8 @@ export default function AddClothesPage() {
             <AddClothesModal 
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)} 
-                searchResults={data?.searchResults || []}
-                ticker={data?.ticker}
+                searchResults={clothesData?.searchResults || []}
+                ticker={clothesData?.ticker}
             />
         </div>
     );

@@ -11,5 +11,11 @@ export class CreateClothingDto {
   type: string;
 
   @IsString()
+  category: string;
+
+  @IsString({ each: true })
+  seasons: string[];
+
+  @IsString()
   ticker: string;
 }
