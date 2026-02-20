@@ -5,8 +5,9 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Field, I
 import { X, Check } from 'lucide-react';
 import { SerperImageResult } from '@/api/clothes';
 import Image from 'next/image';
-import { CATEGORIES, defaultFormValues, SEASONS, TYPES, Category } from './const';
+import { CATEGORIES, SEASONS, TYPES, Category } from '@fitly/shared';
 import { useSaveClothing } from '@/hooks/use-clothes';
+import { defaultFormValues } from './const';
 
 interface AddClothesModalProps {
     isOpen: boolean;
