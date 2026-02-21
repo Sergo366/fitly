@@ -196,7 +196,7 @@ export default function AddClothesPage() {
                         <Loader2 className="w-5 h-5 animate-spin" />
                         Updating wardrobe...
                     </>
-                ) : uploadSuccess ? (
+                ) : uploadSuccess && file ? (
                     <>
                         <CheckCircle2 className="w-5 h-5" />
                         Done
