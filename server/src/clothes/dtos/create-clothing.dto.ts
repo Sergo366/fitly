@@ -1,9 +1,12 @@
 import { IsString, IsIn } from 'class-validator';
-import { CATEGORIES, SEASONS } from '@fitly/shared';
+import { CATEGORIES, SEASONS, Season } from '@fitly/shared';
 
 export class CreateClothingDto {
   @IsString()
   title: string;
+
+  @IsString()
+  userTitle: string;
 
   @IsString()
   imageUrl: string;
@@ -17,7 +20,7 @@ export class CreateClothingDto {
 
   @IsString({ each: true })
   @IsIn(SEASONS, { each: true })
-  seasons: string[];
+  seasons: Season[];
 
   @IsString()
   ticker: string;

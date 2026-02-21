@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAddClothing } from '@/hooks/use-clothes';
 import { useToast } from '@/hooks/use-toast/use-toast';
-import { mockResponse } from '@/mock/const';
+
 const AddClothesModal = dynamic(
     () => import('@/components/modals/AddClothesModal/AddClothesModal').then(mod => mod.AddClothesModal),
     { ssr: false }
@@ -93,6 +93,11 @@ export default function AddClothesPage() {
             return axiosError.response?.data?.message || 'Upload failed. Please try again.';
         }
         return err instanceof Error ? err.message : String(err);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        removeFile();
     };
 
     return (
@@ -206,7 +211,7 @@ export default function AddClothesPage() {
 
             <AddClothesModal 
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)} 
+                onClose={handleCloseModal} 
                 searchResults={clothesData?.searchResults || []}
                 ticker={clothesData?.ticker}
             />

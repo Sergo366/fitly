@@ -1,4 +1,5 @@
 export const SEASONS = ['Winter', 'Spring', 'Summer', 'Autumn', 'All seasons'] as const;
+export type Season = (typeof SEASONS)[number];
 
 export const CATEGORY_TYPES = {
     Tops: 'Tops',

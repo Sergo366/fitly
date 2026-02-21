@@ -47,6 +47,7 @@ export class ClothesService {
       type: dto.type,
       category: dto.category,
       seasons: dto.seasons,
+      userTitle: dto.userTitle,
       imageUrl: dto.imageUrl,
       ticker: dto.ticker,
       userId,

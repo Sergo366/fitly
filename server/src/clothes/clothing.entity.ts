@@ -7,6 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Season } from '@fitly/shared';
 
 @Entity()
 export class Clothing {
@@ -17,13 +18,16 @@ export class Clothing {
   title: string;
 
   @Column()
+  userTitle: string;
+
+  @Column()
   type: string;
 
   @Column({ nullable: true })
   category: string;
 
   @Column('simple-array', { nullable: true })
-  seasons: string[];
+  seasons: Season[];
 
   @Column({ nullable: true })
   imageUrl: string;

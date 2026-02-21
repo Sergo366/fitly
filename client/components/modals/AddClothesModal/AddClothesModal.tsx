@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Field, Input, Label, Select } from '@headlessui/react';
-import { X, Check } from 'lucide-react';
+import { X, Check, Loader2 } from 'lucide-react';
 import { SerperImageResult } from '@/api/clothes';
 import Image from 'next/image';
 import { CATEGORIES, SEASONS, TYPES, Category } from '@fitly/shared';
@@ -20,10 +20,10 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
     const [step, setStep] = useState<'selection' | 'details'>('selection');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [formData, setFormData] = useState(defaultFormValues);
-    const { mutate: saveClothing } = useSaveClothing();
+    const { mutate: saveClothing, isPending: isSaving } = useSaveClothing();
 
     const handleConfirm = () => {
-        if (selectedImage && formData.title && formData.category && formData.seasons.length > 0) {
+        if (selectedImage) {
             saveClothing({
                 imageUrl: selectedImage,
                 ...formData,
@@ -52,6 +52,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
     };
 
     const resetAndClose = () => {
+        if (isSaving) return;
         setStep('selection');
         setSelectedImage(null);
         setFormData(defaultFormValues);
@@ -91,7 +92,8 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                     </DialogTitle>
                                     <button
                                         onClick={resetAndClose}
-                                        className="p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400 hover:text-white"
+                                        disabled={isSaving}
+                                        className="p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <X className="w-6 h-6" />
                                     </button>
@@ -250,21 +252,23 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                             <div className="pt-4 flex gap-3">
                                                 <button
                                                     onClick={() => setStep('selection')}
-                                                    className="flex-1 px-6 py-3 rounded-xl font-medium text-white border border-zinc-800 hover:bg-white/5 transition-all"
+                                                    disabled={isSaving}
+                                                    className="flex-1 px-6 py-3 rounded-xl font-medium text-white border border-zinc-800 hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     Back
                                                 </button>
                                                 <button
                                                     onClick={handleConfirm}
-                                                    disabled={!formData.title || !formData.category || formData.seasons.length === 0}
+                                                    disabled={!formData.title || !formData.category || formData.seasons.length === 0 || isSaving}
                                                     className={`
-                                                        flex-[2] px-8 py-3 rounded-xl font-semibold transition-all duration-300
-                                                        ${(!formData.title || !formData.category || formData.seasons.length === 0)
+                                                        flex-[2] px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2
+                                                        ${(!formData.title || !formData.category || formData.seasons.length === 0 || isSaving)
                                                             ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
                                                             : 'bg-primary text-background hover:bg-primary-hover shadow-lg shadow-primary/20 active:scale-95'}
                                                     `}
                                                 >
-                                                    Confirm
+                                                    {isSaving && <Loader2 className="w-5 h-5 animate-spin" />}
+                                                    {isSaving ? 'Saving...' : 'Confirm'}
                                                 </button>
                                             </div>
                                         </div>
