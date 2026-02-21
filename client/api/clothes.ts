@@ -1,4 +1,5 @@
 import apiClient from '@/lib/api-client';
+import { Category, Season } from '@fitly/shared';
 
 export interface SerperImageResult {
     title: string;
@@ -13,6 +14,16 @@ export interface SerperImageResult {
     link: string;
     googleUrl: string;
     position: number;
+}
+
+export interface SaveClothingData {
+    imageUrl: string;
+    title: string;
+    userTitle: string;
+    category: Category | "";
+    type: string;
+    seasons: Season[];
+    ticker?: string;
 }
 
 export interface Clothing {
@@ -46,7 +57,7 @@ export const clothesApi = {
         return response.data;
     },
 
-    save: async (data: any): Promise<Clothing> => {
+    save: async (data: SaveClothingData): Promise<Clothing> => {
         const response = await apiClient.post<Clothing>('/clothes/save-clothes', data);
         return response.data;
     },

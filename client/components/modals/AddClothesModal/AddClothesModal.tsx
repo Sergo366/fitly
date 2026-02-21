@@ -5,7 +5,7 @@ import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Field, I
 import { X, Check, Loader2 } from 'lucide-react';
 import { SerperImageResult } from '@/api/clothes';
 import Image from 'next/image';
-import { CATEGORIES, SEASONS, TYPES, Category } from '@fitly/shared';
+import { CATEGORIES, SEASONS, TYPES, Category, Season } from '@fitly/shared';
 import { useSaveClothing } from '@/hooks/use-clothes';
 import { defaultFormValues } from './const';
 
@@ -42,7 +42,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
         setFormData(prev => ({ ...prev, title }));
     };
 
-    const toggleSeason = (season: string) => {
+    const toggleSeason = (season: Season) => {
         setFormData(prev => ({
             ...prev,
             seasons: prev.seasons.includes(season)

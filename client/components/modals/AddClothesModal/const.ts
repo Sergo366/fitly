@@ -1,11 +1,11 @@
-import { Category } from "@fitly/shared";
+import { Category, Season } from "@fitly/shared";
 
-type FormValues = {
+export type FormValues = {
     title: string;
     userTitle: string;
     category: Category | "";
     type: string;
-    seasons: string[];
+    seasons: Season[];
 }
 
 export const defaultFormValues: FormValues = {

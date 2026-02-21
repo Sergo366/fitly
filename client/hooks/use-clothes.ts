@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { clothesApi } from '@/api/clothes';
+import { clothesApi, SaveClothingData } from '@/api/clothes';
 
 export const useAddClothing = () => {
     const queryClient = useQueryClient();
@@ -15,8 +15,7 @@ export const useSaveClothing = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-      //todo: add fix type
-        mutationFn: (data: any) => clothesApi.save(data),
+        mutationFn: (data: SaveClothingData) => clothesApi.save(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clothes'] });
         },
