@@ -27,7 +27,7 @@ export class AuthController {
       httpOnly: false, // Accessible by Next.js middleware
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax', // Use lax for local development
-      maxAge: 15 * 60 * 1000, // 15 mins
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
       path: '/',
     });
 
