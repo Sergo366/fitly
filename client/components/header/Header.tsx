@@ -10,7 +10,7 @@ import Cookies from 'js-cookie';
 const navigation = [
   { name: 'Look analyze', href: '/analyze' },
   { name: 'My Wardrobe', href: '/wardrobe' },
-  { name: 'Create Look', href: '/create' },
+  { name: 'Create Look', href: '/create-look' },
   { name: 'Pricing', href: '/pricing' },
 ];
 
@@ -94,8 +94,9 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
-            <Link href="/add-clothes" className="p-2 bg-primary cursor-pointer text-white rounded-xl hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 flex items-center justify-center">
-              <Plus className="w-5 h-5" />
+            <Link href="/add-clothes" className="px-4 py-2 bg-primary cursor-pointer text-black rounded-xl hover:bg-primary/95 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group">
+              <Plus className="w-4 h-4 transition-transform group-hover:rotate-90" />
+              <span className="font-bold text-[13px] tracking-tight whitespace-nowrap">Add Clothes to Wardrobe</span>
             </Link>
             {/* Profile Dropdown */}
             <HeadlessMenu as="div" className="relative">

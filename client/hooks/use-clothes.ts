@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { clothesApi, SaveClothingData } from '@/api/clothes';
 
 export const useAddClothing = () => {
@@ -11,6 +11,7 @@ export const useAddClothing = () => {
         },
     });
 };
+
 export const useSaveClothing = () => {
     const queryClient = useQueryClient();
 
@@ -19,5 +20,12 @@ export const useSaveClothing = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['clothes'] });
         },
+    });
+};
+
+export const useGetClothes = () => {
+    return useQuery({
+        queryKey: ['clothes'],
+        queryFn: () => clothesApi.findAll(),
     });
 };

@@ -39,6 +39,7 @@ export interface Clothing {
     imageUrl?: string;
     ticker?: string;
     searchResults?: SerperImageResult[];
+    userTitle?: string;
 }
 
 export const clothesApi = {

@@ -1,15 +1,20 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #0C0C0C;
-  --foreground: #F5F5F7;
-  --primary: #D4C4A8;
-  --primary-hover: #B8A88B;
-  --secondary: #262626;
-  --accent: #A855F7;
-  --accent-glow: rgba(168, 85, 247, 0.4);
-  --card: rgba(18, 18, 18, 0.7);
-  --border: rgba(255, 255, 255, 0.08);
+  --background: #0e0e11;
+  --foreground: #ffffff;
+  --primary: #d4af35;
+  --primary-hover: rgba(255, 255, 255, 0.9);
+  --secondary: #141418;
+  --accent: #ffffff;
+  --accent-glow: rgba(255, 255, 255, 0.1);
+  --card: #18181f;
+  --border: rgba(255, 255, 255, 0.06);
+  --background-button: rgb(145 158 171);
+  --text-color-white: #E5E5E5;
+  --text-color-dark: #1A1608;
+  --text-color-secondary: #757575;
+  --text-color-decor: #4D4D4D;
 }
 
 @theme inline {
@@ -21,14 +26,22 @@
   --color-card: var(--card);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
   --animate-shake: shake 0.2s ease-in-out 0s 2;
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 }
 
@@ -42,6 +55,15 @@ body {
 /* Custom selection color to match theme */
 ::selection {
   background-color: rgba(212, 196, 168, 0.3);
-  color: #F5F5F7;
+  color: #f5f5f7;
 }
 
+/* Force dark background for autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #121214 inset !important;
+  -webkit-text-fill-color: #e7e7e7 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

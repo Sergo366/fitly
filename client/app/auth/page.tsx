@@ -67,7 +67,7 @@ export default function AuthPage() {
             <Shirt className="w-10 h-10 text-primary animate-pulse" />
             Fitly
           </h1>
-          <p className="text-stone-500 font-medium">Curate your perfect outfit</p>
+          <p className="text-stone-300 font-medium">Curate your perfect outfit</p>
         </div>
 
         <div className="bg-card backdrop-blur-xl border border-border p-8 rounded-3xl shadow-2xl relative overflow-hidden">
@@ -81,10 +81,10 @@ export default function AuthPage() {
                   key={category}
                   className={({ selected }) =>
                     classNames(
-                      'w-full py-3 text-sm font-semibold leading-5 rounded-xl transition-all duration-200 outline-none',
+                      'cursor-pointer w-full py-3 text-sm text-[var(--text-color-dark)] font-bold leading-5 rounded-xl transition-all duration-300 outline-none border border-transparent',
                       selected
-                        ? 'bg-primary text-black shadow-lg shadow-primary/25 ring-1 ring-white/10'
-                        : 'text-stone-500 hover:text-foreground hover:bg-white/5'
+                        ? 'bg-primary shadow-lg shadow-primary/25 border-white/20'
+                        : 'bg-white/[0.02] text-[var(--text-color-secondary)] hover:text-white hover:bg-white/10'
                     )
                   }
                 >
@@ -100,7 +100,7 @@ export default function AuthPage() {
                   className="space-y-5"
                 >
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Email Address</label>
+                    <label className="block text-sm text-[var(--text-color-secondary)] mb-2 ml-1">Email Address</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Mail className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
@@ -118,7 +118,7 @@ export default function AuthPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2 ml-1">Password</label>
+                    <label className="block text-sm text-[var(--text-color-secondary)] mb-2 ml-1">Password</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Lock className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
@@ -151,7 +151,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/25"
+                    className="cursor-pointer w-full flex justify-center py-4 px-4 text-sm font-bold rounded-2xl text-[var(--text-color-dark)] bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200"
                   >
                     {isLoading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -168,7 +168,7 @@ export default function AuthPage() {
                   className="space-y-5"
                 >
                   <div>
-                    <label className="block text-sm font-medium text-stone-400 mb-2 ml-1">Email Address</label>
+                    <label className="block text-sm text-[var(--text-color-secondary)] mb-2 ml-1">Email Address</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Mail className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
@@ -186,7 +186,7 @@ export default function AuthPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-stone-400 mb-2 ml-1">Password</label>
+                    <label className="block text-sm text-[var(--text-color-secondary)] mb-2 ml-1">Password</label>
                     <div className="relative group">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Lock className="h-5 w-5 text-stone-500 group-focus-within:text-primary transition-colors" />
@@ -220,7 +220,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-2xl text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/25"
+                    className="cursor-pointer w-full flex justify-center py-4 px-4 text-sm font-bold rounded-2xl text-[var(--text-color-dark)] bg-primary hover:bg-primary/90 focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background transition-all duration-200"
                   >
                     {isLoading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
@@ -234,10 +234,10 @@ export default function AuthPage() {
           </TabGroup>
         </div>
 
-        <p className="mt-8 text-center text-sm text-stone-600">
+        <p className="mt-8 text-center text-sm text-stone-400">
           By continuing, you agree to Fitly&apos;s{' '}
-          <a href="#" className="font-semibold text-stone-400 hover:text-primary transition-colors">Terms of Service</a> and{' '}
-          <a href="#" className="font-semibold text-stone-400 hover:text-primary transition-colors">Privacy Policy</a>.
+          <a href="#" className="font-semibold text-stone-200 hover:text-primary transition-colors">Terms of Service</a> and{' '}
+          <a href="#" className="font-semibold text-stone-200 hover:text-primary transition-colors">Privacy Policy</a>.
         </p>
       </div>
     </div>
