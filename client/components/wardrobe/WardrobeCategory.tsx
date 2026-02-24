@@ -18,16 +18,13 @@ export default function WardrobeCategory({ category, items, onOpen }: WardrobeCa
     <div 
       onClick={() => onOpen(category)}
       className="group relative bg-[#1A1A1E] border border-white/[0.05] rounded-3xl p-6 hover:bg-[#232329] transition-all duration-500 cursor-pointer overflow-hidden shadow-sm hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] active:scale-[0.98]"
-    >
-      {/* Top highlight line */}
-      <div className="absolute inset-x-0 top-0 h-[0.5px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      
-      <div className="flex justify-between items-start mb-10 relative z-10">
+    >  
+      <div className="flex justify-between items-start mb-4 relative z-10">
         <div>
           <div className="flex flex-col items-start w-fit">
             <h2 className="text-xl font-bold text-white tracking-tight leading-none group-hover:text-primary transition-colors">{category}</h2>
-            <div className="w-8 h-[2px] bg-accent mt-2 rounded-full transform group-hover:w-full transition-all duration-300 shadow-[0_0_8px_rgba(168,85,247,0.5)]" />
           </div>
+          <div className="w-full h-[2px] bg-gradient-to-r from-primary to-transparent rounded-full mt-1" />
           <p className="text-sm text-stone-400 mt-3 font-medium">
             {count} {count === 1 ? 'item' : 'items'}
           </p>

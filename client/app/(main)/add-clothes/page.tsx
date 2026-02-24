@@ -13,6 +13,7 @@ const AddClothesModal = dynamic(
 );
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/png'];
 
 export default function AddClothesPage() {
     const [file, setFile] = useState<File | null>(null);
@@ -22,10 +23,12 @@ export default function AddClothesPage() {
     const { toast } = useToast();
 
     const { data: clothesData, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
 
     const validateFile = useCallback((file: File) => {
-        if (!file.type.startsWith('image/')) {
-            toast.error('Please select an image.');
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            toast.error('Please select a JPG or PNG image.');
             return false;
         }
         if (file.size > MAX_FILE_SIZE) {
@@ -116,6 +119,7 @@ export default function AddClothesPage() {
                         onDragLeave={onDragLeave}
                         onDrop={onDrop}
                         className={`
+                            h-[380px]
                             relative group cursor-pointer
                             border-2 border-dashed rounded-3xl p-12
                             flex flex-col items-center justify-center gap-4
@@ -124,13 +128,13 @@ export default function AddClothesPage() {
                                 ? 'border-accent bg-accent/5 scale-[1.02] shadow-[0_0_30px_rgba(168,85,247,0.15)]' 
                                 : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50'}
                         `}
-                        onClick={() => document.getElementById('file-upload')?.click()}
+                        onClick={() => fileInputRef.current?.click()}
                     >
                         <input
-                            id="file-upload"
+                            ref={fileInputRef}
                             type="file"
                             className="hidden"
-                            accept="image/*"
+                            accept="image/jpeg, image/png"
                             onChange={handleInputChange}
                         />
                         
