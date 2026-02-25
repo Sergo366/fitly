@@ -62,4 +62,8 @@ export const clothesApi = {
         const response = await apiClient.post<Clothing>('/clothes/save-clothes', data);
         return response.data;
     },
+
+   updateClothes: async ({ data, clothesId }: { data: Partial<SaveClothingData>, clothesId: string }): Promise<void> => {
+        await apiClient.patch(`/clothes/${clothesId}`, data);
+    },
 };

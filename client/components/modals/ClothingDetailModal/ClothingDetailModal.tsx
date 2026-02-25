@@ -6,6 +6,9 @@ import { X, Edit2, Check, Shirt, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { CATEGORIES, SEASONS, TYPES, Category, Season } from '@fitly/shared';
 import { Clothing } from '@/api/clothes';
+import { useUpdateClothes } from '@/hooks/useUpdateClothes';
+import { useToast } from '@/hooks/use-toast/use-toast';
+import { Loader2 } from 'lucide-react';
 
 interface ClothingDetailModalProps {
     isOpen: boolean;
@@ -14,6 +17,9 @@ interface ClothingDetailModalProps {
 }
 
 export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailModalProps) {
+  const { mutate: updateClothes, isPending } = useUpdateClothes();
+  const { toast } = useToast();
+
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
         userTitle: item.userTitle || item.title || '',
@@ -39,12 +45,19 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
         setIsEditing(false);
     }
 
-    const handleSave = () => {
-        console.log('Saving clothing item data:', {
-            id: item.id,
-            ...formData,
-        });
-        setIsEditing(false);
+    const handleSave = async () => {
+      updateClothes(
+        { clothesId: item.id, data: { ...formData } },
+        {
+          onSuccess: () => {
+            toast.success('Clothing updated successfully');
+            handleClose();
+          },
+          onError: () => {
+            toast.error('Failed to update clothing');
+          },
+        }
+      );
     };
 
     const handleClose = () => {
@@ -109,21 +122,23 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                         {/* Back button (Mobile) */}
                                         <button 
                                             onClick={handleClose}
-                                            className="md:hidden absolute top-6 left-6 p-3 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10"
+                                            disabled={isPending}
+                                            className="md:hidden absolute top-6 left-6 p-3 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/10 disabled:opacity-50"
                                         >
                                             <ChevronLeft className="w-6 h-6" />
                                         </button>
                                     </div>
 
                                     {/* Right: Details Section */}
-                                    <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col bg-zinc-950/50 backdrop-blur-xl border-l border-white/5">
+                                    <div className="w-full md:w-1/2 p-8 md:p-8 flex flex-col bg-zinc-950/50 backdrop-blur-xl border-l border-white/5">
                                         <div className="flex items-center justify-between mb-10">
                                             <DialogTitle as="h3" className="text-sm font-bold text-stone-500 uppercase tracking-[0.2em]">
                                                 {isEditing ? 'Editing Item' : 'Item Details'}
                                             </DialogTitle>
                                             <button
                                                 onClick={handleClose}
-                                                className="hidden md:flex p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-500 hover:text-white cursor-pointer"
+                                                disabled={isPending}
+                                                className="hidden md:flex p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-500 hover:text-white cursor-pointer disabled:opacity-50"
                                             >
                                                 <X className="w-5 h-5" />
                                             </button>
@@ -132,18 +147,19 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                         <div className="flex-1 space-y-8 overflow-y-auto custom-scrollbar pr-2">
                                             {isEditing ? (
                                                 <div className="space-y-6">
-                                                    <Field>
+                                                    <Field className="px-1">
                                                         <Label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2 ml-1">Item Title</Label>
                                                         <Input
                                                             type="text"
                                                             value={formData.userTitle}
                                                             onChange={(e) => setFormData(prev => ({ ...prev, userTitle: e.target.value }))}
-                                                            className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-stone-600"
+                                                            disabled={isPending}
+                                                            className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-stone-600 disabled:opacity-50"
                                                             placeholder="e.g. Vintage Denim Jacket"
                                                         />
                                                     </Field>
 
-                                                    <Field>
+                                                    <Field className="px-1">
                                                         <Label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2 ml-1">Category</Label>
                                                         <div className="relative">
                                                             <Select
@@ -156,7 +172,8 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                                         type: '' 
                                                                     }));
                                                                 }}
-                                                                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer"
+                                                                disabled={isPending}
+                                                                className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer disabled:opacity-50"
                                                             >
                                                                 <option value="" disabled className="bg-zinc-900">Select category</option>
                                                                 {CATEGORIES.map((category) => (
@@ -166,14 +183,14 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                         </div>
                                                     </Field>
 
-                                                    <Field>
+                                                    <Field className="px-1">
                                                         <Label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2 ml-1">Type</Label>
                                                         <div className="relative">
                                                             <Select
                                                                 value={formData.type}
                                                                 onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
                                                                 className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none cursor-pointer disabled:opacity-50"
-                                                                disabled={!formData.category}
+                                                                disabled={!formData.category || isPending}
                                                             >
                                                                 <option value="" disabled className="bg-zinc-900">Select type</option>
                                                                 {formData.category && TYPES[formData.category as keyof typeof TYPES].map((type) => (
@@ -183,18 +200,20 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                         </div>
                                                     </Field>
 
-                                                    <Field>
+                                                    <Field className="px-1">
                                                         <Label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-4 ml-1">Seasons</Label>
                                                         <div className="flex flex-wrap gap-2">
                                                             {SEASONS.map(season => (
                                                                 <button
                                                                     key={season}
                                                                     onClick={() => toggleSeason(season)}
+                                                                    disabled={isPending}
                                                                     className={`
                                                                         px-4 py-2 cursor-pointer rounded-full text-xs font-bold transition-all
                                                                         ${formData.seasons.includes(season)
                                                                             ? 'bg-primary text-background shadow-[0_0_15px_rgba(168,85,247,0.3)]'
                                                                             : 'bg-white/5 text-stone-500 border border-white/5 hover:border-white/10 hover:text-white'}
+                                                                        disabled:opacity-50
                                                                     `}
                                                                 >
                                                                     {season}
@@ -245,17 +264,22 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                 <>
                                                     <button
                                                         onClick={() => setIsEditing(false)}
-                                                        className="flex-1 cursor-pointer px-8 py-4 rounded-2xl font-bold text-sm text-stone-400 hover:text-white bg-white/5 hover:bg-white/10 transition-all transition-all"
+                                                        disabled={isPending}
+                                                        className="flex-1 cursor-pointer px-8 py-4 rounded-2xl font-bold text-sm text-stone-400 hover:text-white bg-white/5 hover:bg-white/10 transition-all disabled:opacity-50"
                                                     >
                                                         Cancel
                                                     </button>
                                                     <button
                                                         onClick={handleSave}
-                                                        disabled={!formData.userTitle && !formData.category}
+                                                        disabled={(!formData.userTitle && !formData.category) || isPending}
                                                         className="flex-[1.5] cursor-pointer flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-primary text-background font-bold text-sm hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50"
                                                     >
-                                                        <Check className="w-4 h-4 stroke-[3]" />
-                                                        Save Changes
+                                                        {isPending ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <Check className="w-4 h-4 stroke-[3]" />
+                                                        )}
+                                                        {isPending ? 'Updating...' : 'Save Changes'}
                                                     </button>
                                                 </>
                                             ) : (

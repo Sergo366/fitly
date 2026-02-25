@@ -35,6 +35,15 @@ export class ClothesController {
     return this.clothesService.saveClothes(body, userId);
   }
 
+  @Patch(':id')
+  update(
+    @GetCurrentUserId() userId: string,
+    @Param('id', ParseUUIDPipe) clothesId: string,
+    @Body() updateClothingDto: UpdateClothingDto,
+  ) {
+    return this.clothesService.update(userId, clothesId, updateClothingDto);
+  }
+
   @Get()
   findAll(@GetCurrentUserId() userId: string) {
     return this.clothesService.findAll(userId);
@@ -46,15 +55,6 @@ export class ClothesController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.clothesService.findOne(userId, id);
-  }
-
-  @Patch(':id')
-  update(
-    @GetCurrentUserId() userId: string,
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateClothingDto: UpdateClothingDto,
-  ) {
-    return this.clothesService.update(userId, id, updateClothingDto);
   }
 
   @Delete(':id')

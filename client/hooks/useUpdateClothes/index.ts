@@ -1,0 +1,1 @@
+export { useUpdateClothes } from './useUpdateClothes';

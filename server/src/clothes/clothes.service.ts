@@ -75,14 +75,10 @@ export class ClothesService {
     return clothing;
   }
 
-  async update(
-    userId: string,
-    id: string,
-    dto: UpdateClothingDto,
-  ): Promise<Clothing> {
-    const clothing = await this.findOne(userId, id);
+  async update(userId: string, clothesId: string, dto: UpdateClothingDto) {
+    const clothing = await this.findOne(userId, clothesId);
     const updated = this.clothesRepository.merge(clothing, dto);
-    return this.clothesRepository.save(updated);
+    await this.clothesRepository.save(updated);
   }
 
   async remove(userId: string, id: string): Promise<void> {
