@@ -65,7 +65,7 @@ export default function WardrobePage() {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex-1 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Detailed view of a category */}
           {selectedCategory ? (
@@ -133,7 +133,7 @@ export default function WardrobePage() {
             </div>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -123,7 +123,7 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                             </DialogTitle>
                                             <button
                                                 onClick={handleClose}
-                                                className="hidden md:flex p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-500 hover:text-white"
+                                                className="hidden md:flex p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-500 hover:text-white cursor-pointer"
                                             >
                                                 <X className="w-5 h-5" />
                                             </button>
@@ -191,7 +191,7 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                                     key={season}
                                                                     onClick={() => toggleSeason(season)}
                                                                     className={`
-                                                                        px-4 py-2 rounded-full text-xs font-bold transition-all
+                                                                        px-4 py-2 cursor-pointer rounded-full text-xs font-bold transition-all
                                                                         ${formData.seasons.includes(season)
                                                                             ? 'bg-primary text-background shadow-[0_0_15px_rgba(168,85,247,0.3)]'
                                                                             : 'bg-white/5 text-stone-500 border border-white/5 hover:border-white/10 hover:text-white'}
@@ -245,14 +245,14 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                                 <>
                                                     <button
                                                         onClick={() => setIsEditing(false)}
-                                                        className="flex-1 px-8 py-4 rounded-2xl font-bold text-sm text-stone-400 hover:text-white bg-white/5 hover:bg-white/10 transition-all transition-all"
+                                                        className="flex-1 cursor-pointer px-8 py-4 rounded-2xl font-bold text-sm text-stone-400 hover:text-white bg-white/5 hover:bg-white/10 transition-all transition-all"
                                                     >
                                                         Cancel
                                                     </button>
                                                     <button
                                                         onClick={handleSave}
                                                         disabled={!formData.userTitle && !formData.category}
-                                                        className="flex-[1.5] flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-primary text-background font-bold text-sm hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50"
+                                                        className="flex-[1.5] cursor-pointer flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-primary text-background font-bold text-sm hover:bg-primary-hover shadow-lg shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50"
                                                     >
                                                         <Check className="w-4 h-4 stroke-[3]" />
                                                         Save Changes
@@ -261,7 +261,7 @@ export function ClothingDetailModal({ isOpen, onClose, item }: ClothingDetailMod
                                             ) : (
                                                 <button
                                                     onClick={() => setIsEditing(true)}
-                                                    className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white text-black font-bold text-sm hover:bg-stone-200 transition-all active:scale-[0.98] shadow-xl"
+                                                    className="w-full flex cursor-pointer items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white text-black font-bold text-sm hover:bg-stone-200 transition-all active:scale-[0.98] shadow-xl"
                                                 >
                                                     <Edit2 className="w-4 h-4" />
                                                     Edit Details

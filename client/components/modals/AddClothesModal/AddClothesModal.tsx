@@ -93,7 +93,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                     <button
                                         onClick={resetAndClose}
                                         disabled={isSaving}
-                                        className="p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400 hover:text-white disabled:opacity-50"
                                     >
                                         <X className="w-6 h-6" />
                                     </button>
