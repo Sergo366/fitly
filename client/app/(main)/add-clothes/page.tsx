@@ -22,7 +22,7 @@ export default function AddClothesPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { toast } = useToast();
 
-    const { data: clothesData, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess } = useAddClothing();
+    const { data: clothesData, mutate: addClothing, isPending: isUploading, isSuccess: uploadSuccess, reset: resetUpload } = useAddClothing();
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
 
@@ -40,6 +40,7 @@ export default function AddClothesPage() {
 
     const handleFile = useCallback((selectedFile: File) => {
         if (validateFile(selectedFile)) {
+            resetUpload();
             setFile(selectedFile);
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -47,7 +48,7 @@ export default function AddClothesPage() {
             };
             reader.readAsDataURL(selectedFile);
         }
-    }, [validateFile]);
+    }, [validateFile, resetUpload]);
 
     const onDrop = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -73,6 +74,7 @@ export default function AddClothesPage() {
     const removeFile = () => {
         setFile(null);
         setPreview(null);
+        resetUpload();
     };
 
     const handleUpload = async () => {

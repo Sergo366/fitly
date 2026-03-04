@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { CATEGORIES, SEASONS, TYPES, Category, Season } from '@fitly/shared';
 import { useSaveClothing } from '@/hooks/use-clothes';
 import { defaultFormValues } from './const';
+import { useToast } from '@/hooks/use-toast/use-toast';
 
 interface AddClothesModalProps {
     isOpen: boolean;
@@ -17,6 +18,8 @@ interface AddClothesModalProps {
 }
 
 export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddClothesModalProps) {
+    const { toast } = useToast();
+
     const [step, setStep] = useState<'selection' | 'details'>('selection');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [formData, setFormData] = useState(defaultFormValues);
@@ -31,7 +34,8 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
             }, 
             {
                 onSuccess: () => {
-                    onClose();
+                  toast.success('Clothes added successfully!');
+                  resetAndClose();
                 }
             });
         }
@@ -52,7 +56,6 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
     };
 
     const resetAndClose = () => {
-        if (isSaving) return;
         setStep('selection');
         setSelectedImage(null);
         setFormData(defaultFormValues);
@@ -93,7 +96,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                     <button
                                         onClick={resetAndClose}
                                         disabled={isSaving}
-                                        className="p-2 rounded-full hover:bg-white/5 transition-colors text-zinc-400 hover:text-white disabled:opacity-50"
+                                        className="p-2 rounded-full cursor-pointer hover:bg-white/5 transition-colors text-zinc-400 hover:text-white"
                                     >
                                         <X className="w-6 h-6" />
                                     </button>
@@ -114,7 +117,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                                     key={idx}
                                                     onClick={() => handleSelectImage(img.imageUrl, img.title)}
                                                     className={`
-                                                        relative aspect-square rounded-2xl overflow-hidden border-2 transition-all duration-300 group
+                                                        relative aspect-square cursor-pointer rounded-2xl overflow-hidden border-2 transition-all duration-300 group
                                                         ${selectedImage === img.imageUrl 
                                                             ? 'border-primary ring-4 ring-primary/20 scale-[0.98]' 
                                                             : 'border-zinc-800 hover:border-zinc-700'}
@@ -141,7 +144,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                         <div className="mt-8 flex justify-end gap-3">
                                             <button
                                                 onClick={resetAndClose}
-                                                className="px-6 py-3 rounded-xl font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
+                                                className="px-6 py-3 cursor-pointer rounded-xl font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
                                             >
                                                 Cancel
                                             </button>
@@ -253,7 +256,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                                 <button
                                                     onClick={() => setStep('selection')}
                                                     disabled={isSaving}
-                                                    className="flex-1 px-6 py-3 rounded-xl font-medium text-white border border-zinc-800 hover:bg-white/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="flex-1 px-6 py-3 rounded-xl font-medium text-white border border-zinc-800 hover:bg-white/5 transition-all cursor-pointer"
                                                 >
                                                     Back
                                                 </button>
@@ -261,7 +264,7 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                                     onClick={handleConfirm}
                                                     disabled={!formData.title || !formData.category || formData.seasons.length === 0 || isSaving}
                                                     className={`
-                                                        flex-[2] px-8 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2
+                                                        flex-[2] px-8 py-3 cursor-pointer rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2
                                                         ${(!formData.title || !formData.category || formData.seasons.length === 0 || isSaving)
                                                             ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
                                                             : 'bg-primary text-background hover:bg-primary-hover shadow-lg shadow-primary/20 active:scale-95'}
