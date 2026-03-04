@@ -59,6 +59,42 @@ export default function ClothingCard({ item, className = '' }: ClothingCardProps
     });
   };
 
+
+const getClothingCardActions = (item: Clothing) => [
+  {
+    id: 'favorite',
+    label: item.isFavorite ? 'Remove from Favorite' : 'Mark as Favorite',
+    icon: Heart,
+    onClick: handleToggleFavorite,
+    iconClass: item.isFavorite ? 'text-primary fill-primary scale-110' : '',
+    focusClass: 'bg-primary/10 text-primary',
+  },
+  {
+    id: 'suggest',
+    label: 'Suggest Match',
+    icon: Sparkles,
+    onClick: (e: React.MouseEvent) => { e.stopPropagation(); toast.success('Matching logic coming soon!'); },
+    iconClass: 'text-amber-400',
+    focusClass: 'bg-amber-400/10 text-amber-400',
+  },
+  {
+    id: 'sell',
+    label: item.isForSale ? 'Remove from Sale' : 'Sell Item',
+    icon: DollarSign,
+    onClick: handleToggleSell,
+    iconClass: item.isForSale ? 'text-green-400 scale-110' : '',
+    focusClass: 'bg-green-400/10 text-green-400',
+  },
+  {
+    id: 'hide',
+    label: item.isHidden ? 'Show Item' : 'Hide Item',
+    icon: item.isHidden ? Eye : EyeOff,
+    onClick: handleToggleHide,
+    iconClass: item.isHidden ? '' : 'text-stone-500',
+    focusClass: 'bg-white/10 text-white',
+  }
+];
+
   return (
     <>
       <div 
@@ -123,60 +159,24 @@ export default function ClothingCard({ item, className = '' }: ClothingCardProps
                   leaveTo="transform opacity-0 scale-95 -translate-y-2"
                 >
                   <MenuItems className="absolute right-0 mt-3 w-56 origin-top-right rounded-2xl bg-[#1A1A1E]/95 backdrop-blur-3xl border border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.6)] focus:outline-none z-[100] overflow-hidden">
-                    <div className="p-1.5">
-                      <MenuItem>
-                        {({ focus }) => (
-                          <button
-                            onClick={handleToggleFavorite}
-                            className={`${
-                              focus ? 'bg-primary/10 text-primary' : 'text-stone-300'
-                            } flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-semibold transition-all cursor-pointer`}
-                          >
-                            <Heart className={`w-4.5 h-4.5 transition-all duration-300 ${item.isFavorite ? 'text-primary fill-primary scale-110' : ''}`} />
-                            <span>{item.isFavorite ? 'Remove from Favorite' : 'Mark as Favorite'}</span>
-                          </button>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ focus }) => (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); toast.success('Matching logic coming soon!'); }}
-                            className={`${
-                              focus ? 'bg-amber-400/10 text-amber-400' : 'text-stone-300'
-                            } flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-semibold transition-all cursor-pointer`}
-                          >
-                            <Sparkles className="w-4.5 h-4.5 text-amber-400" />
-                            <span>Suggest Match</span>
-                          </button>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ focus }) => (
-                          <button
-                            onClick={handleToggleSell}
-                            className={`${
-                              focus ? 'bg-green-400/10 text-green-400' : 'text-stone-300'
-                            } flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-semibold transition-all cursor-pointer`}
-                          >
-                            <DollarSign className={`w-4.5 h-4.5 transition-all duration-300 ${item.isForSale ? 'text-green-400 scale-110' : ''}`} />
-                            <span>{item.isForSale ? 'Remove from Sale' : 'Sell Item'}</span>
-                          </button>
-                        )}
-                      </MenuItem>
-                      <MenuItem>
-                        {({ focus }) => (
-                          <button
-                            onClick={handleToggleHide}
-                            className={`${
-                              focus ? 'bg-white/10 text-white' : 'text-stone-300'
-                            } flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-semibold transition-all cursor-pointer`}
-                          >
-                            {item.isHidden ? <Eye className="w-4.5 h-4.5" /> : <EyeOff className="w-4.5 h-4.5 text-stone-500" />}
-                            <span>{item.isHidden ? 'Show Item' : 'Hide Item'}</span>
-                          </button>
-                        )}
-                      </MenuItem>
+                    <div className="p-1.5 space-y-0.5">
+                      {getClothingCardActions(item).map((action) => (
+                        <MenuItem key={action.id}>
+                          {({ focus }) => (
+                            <button
+                              onClick={action.onClick}
+                              className={`${
+                                focus ? action.focusClass : 'text-stone-300'
+                              } flex w-full items-center gap-3 rounded-xl px-4 py-3 text-[13px] font-semibold transition-all cursor-pointer`}
+                            >
+                              <action.icon className={`w-4.5 h-4.5 transition-all duration-300 ${action.iconClass}`} />
+                              <span>{action.label}</span>
+                            </button>
+                          )}
+                        </MenuItem>
+                      ))}
                     </div>
+                    
                     <div className="border-t border-white/5 p-1.5 bg-black/20">
                       <MenuItem>
                         {({ focus }) => (
