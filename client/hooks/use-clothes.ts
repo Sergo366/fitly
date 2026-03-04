@@ -29,3 +29,25 @@ export const useGetClothes = () => {
         queryFn: () => clothesApi.findAll(),
     });
 };
+
+export const useDeleteClothes = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => clothesApi.remove(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clothes'] });
+        },
+    });
+};
+
+export const useUpdateClothes = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: clothesApi.updateClothes,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clothes'] });
+        },
+    });
+};

@@ -11,20 +11,20 @@
   --card: #18181f;
   --border: rgba(255, 255, 255, 0.06);
   --background-button: rgb(145 158 171);
-  --text-color-white: #E5E5E5;
-  --text-color-dark: #1A1608;
+  --text-color-white: #e5e5e5;
+  --text-color-dark: #1a1608;
   --text-color-secondary: #757575;
-  --text-color-decor: #4D4D4D;
+  --text-color-decor: #4d4d4d;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-secondary: var(--secondary);
-  --color-card: var(--card);
-  --color-border: var(--border);
+  --color-background: #0e0e11;
+  --color-foreground: #ffffff;
+  --color-primary: #d4af35;
+  --color-primary-hover: rgba(255, 255, 255, 0.9);
+  --color-secondary: #141418;
+  --color-card: #18181f;
+  --color-border: rgba(255, 255, 255, 0.06);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

@@ -41,6 +41,15 @@ export class Clothing {
   @Column()
   userId: string;
 
+  @Column({ default: false })
+  isFavorite: boolean;
+
+  @Column({ default: false })
+  isHidden: boolean;
+
+  @Column({ default: false })
+  isForSale: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

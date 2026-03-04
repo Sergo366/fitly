@@ -6,7 +6,7 @@ import { X, Edit2, Check, Shirt, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { CATEGORIES, SEASONS, TYPES, Category, Season } from '@fitly/shared';
 import { Clothing } from '@/api/clothes';
-import { useUpdateClothes } from '@/hooks/useUpdateClothes';
+import { useUpdateClothes } from '@/hooks/use-clothes';
 import { useToast } from '@/hooks/use-toast/use-toast';
 import { Loader2 } from 'lucide-react';
 

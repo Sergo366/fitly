@@ -7,11 +7,18 @@ import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
 import ClothingCard from '@/components/wardrobe/ClothingCard';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
-import { ChevronLeft, Shirt, Sparkles } from 'lucide-react';
+import { ChevronLeft, Shirt, Sparkles, Eye, EyeOff } from 'lucide-react';
 
 export default function WardrobePage() {
   const { data: clothes, isLoading } = useGetClothes();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showHidden, setShowHidden] = useState(false);
+
+  const filteredClothes = useMemo(() => {
+    if (!clothes) return [];
+    if (showHidden) return clothes;
+    return clothes.filter(item => !item.isHidden);
+  }, [clothes, showHidden]);
 
   const groupedClothes = useMemo(() => {
     const groups: Record<string, Clothing[]> = {};
@@ -21,10 +28,8 @@ export default function WardrobePage() {
       groups[cat] = [];
     });
 
-    if (!clothes) return groups;
-
     // Populate groups
-    clothes.forEach((item: Clothing) => {
+    filteredClothes.forEach((item: Clothing) => {
       const cat = (item.category as string) || CATEGORY_TYPES.Other;
       if (groups[cat]) {
         groups[cat].push(item);
@@ -37,7 +42,7 @@ export default function WardrobePage() {
     });
 
     return groups;
-  }, [clothes]);
+  }, [filteredClothes]);
 
   if (isLoading) {
     return (
@@ -113,11 +118,37 @@ export default function WardrobePage() {
                   </div>
                   <span className="text-stone-400 font-bold tracking-[0.4em] uppercase text-[9px]">Collection</span>
                 </div>
-                <h1 className="text-5xl font-extrabold text-white tracking-tight">Your Wardrobe</h1>
-                <p className="text-stone-300 mt-4 text-lg max-w-2xl leading-relaxed font-medium">
-                  Manage your personal style collection. Explore categories to see 
-                  every detail and refine your seasonal looks.
-                </p>
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                  <div>
+                    <h1 className="text-5xl font-extrabold text-white tracking-tight">Your Wardrobe</h1>
+                    <p className="text-stone-300 mt-4 text-lg max-w-2xl leading-relaxed font-medium">
+                      Manage your personal style collection. Explore categories to see 
+                      every detail and refine your seasonal looks.
+                    </p>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowHidden(!showHidden)}
+                    className={`
+                      flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border
+                      ${showHidden 
+                        ? 'bg-primary/20 border-primary/30 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)]' 
+                        : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'}
+                    `}
+                  >
+                    {showHidden ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Showing Hidden Items</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Show Hidden Items</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </header>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

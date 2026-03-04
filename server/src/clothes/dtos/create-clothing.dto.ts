@@ -1,4 +1,4 @@
-import { IsString, IsIn } from 'class-validator';
+import { IsString, IsIn, IsBoolean, IsOptional } from 'class-validator';
 import { CATEGORIES, SEASONS, Season } from '@fitly/shared';
 
 export class CreateClothingDto {
@@ -24,4 +24,16 @@ export class CreateClothingDto {
 
   @IsString()
   ticker: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isFavorite?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isHidden?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  isForSale?: boolean;
 }

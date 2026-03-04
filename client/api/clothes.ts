@@ -24,6 +24,9 @@ export interface SaveClothingData {
     type: string;
     seasons: Season[];
     ticker?: string;
+    isFavorite?: boolean;
+    isHidden?: boolean;
+    isForSale?: boolean;
 }
 
 export interface Clothing {
@@ -38,8 +41,11 @@ export interface Clothing {
     brand?: string;
     imageUrl?: string;
     ticker?: string;
-    searchResults?: SerperImageResult[];
     userTitle?: string;
+    isFavorite?: boolean;
+    isHidden?: boolean;
+    isForSale?: boolean;
+    searchResults?: SerperImageResult[];
 }
 
 export const clothesApi = {
@@ -65,5 +71,9 @@ export const clothesApi = {
 
    updateClothes: async ({ data, clothesId }: { data: Partial<SaveClothingData>, clothesId: string }): Promise<void> => {
         await apiClient.patch(`/clothes/${clothesId}`, data);
+    },
+
+    remove: async (id: string): Promise<void> => {
+        await apiClient.delete(`/clothes/${id}`);
     },
 };
