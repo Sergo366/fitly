@@ -8,6 +8,8 @@ import { ClothingDetailModal } from '../modals/ClothingDetailModal/ClothingDetai
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { useDeleteClothes, useUpdateClothes } from '@/hooks/use-clothes';
 import { useToast } from '@/hooks/use-toast/use-toast';
+import { useConfirmation } from '../modals/ConfirmationModal';
+import { deleteConfirmationModalOptions } from './const';
 
 interface ClothingCardProps {
   item: Clothing;
@@ -15,6 +17,7 @@ interface ClothingCardProps {
 }
 
 export default function ClothingCard({ item, className = '' }: ClothingCardProps) {
+  const { openConfirmation } = useConfirmation()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: deleteClothes } = useDeleteClothes();
   const { mutate: updateClothes } = useUpdateClothes();
@@ -42,11 +45,14 @@ export default function ClothingCard({ item, className = '' }: ClothingCardProps
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (confirm('Are you sure you want to delete this item?')) {
-      deleteClothes(item.id, {
-        onSuccess: () => toast.success('Item deleted')
-      });
-    }
+    openConfirmation({
+      ...deleteConfirmationModalOptions,
+      onConfirm: () => {
+        deleteClothes(item.id, {
+          onSuccess: () => toast.success('Item deleted')
+        });
+      }
+    });
   };
 
   const handleToggleSell = (e: React.MouseEvent) => {

@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState } from 'react';
 import { ToastProvider } from '@/hooks/use-toast/use-toast';
 import { ToastContainer } from './ui/toast-container';
+import { ConfirmationProvider } from './modals/ConfirmationModal';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -21,8 +22,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        {children}
-        <ToastContainer />
+        <ConfirmationProvider>
+          {children}
+          <ToastContainer />
+        </ConfirmationProvider>
       </ToastProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
