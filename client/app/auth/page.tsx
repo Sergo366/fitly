@@ -2,24 +2,25 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { Mail, Lock, Loader2, Shirt, Eye, EyeOff } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { authApi, AuthCredentials } from '@/api/auth';
 import { AxiosError } from 'axios';
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from '@/lib/styles/classNames';
 
 export default function AuthPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState<AuthCredentials>({
     email: '',
     password: '',
+    confirmPassword: ''
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,9 +42,15 @@ export default function AuthPage() {
   });
 
   const handleAuth = (type: 'signin' | 'signup') => {
+    console.log(type);
     if (type === 'signin') {
       loginMutation.mutate(formData);
     } else {
+      if (formData.password !== formData.confirmPassword) {
+        setPasswordMismatch(true);
+        return;
+      }
+      setPasswordMismatch(false);
       registerMutation.mutate(formData);
     }
   };
@@ -211,9 +218,39 @@ export default function AuthPage() {
                     </div>
                   </div>
 
-                  {error && (
+                  <div>
+                    <label className="block text-sm text-[var(--text-color-secondary)] mb-2 ml-1">Confirm Password</label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Lock className={`h-5 w-5 transition-colors ${passwordMismatch ? 'text-rose-400' : 'text-stone-500 group-focus-within:text-primary'}`} />
+                      </div>
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        name="confirmPassword"
+                        required
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        className={`block w-full pl-11 pr-12 py-3.5 bg-white/5 border rounded-2xl text-foreground placeholder-stone-600 focus:outline-none focus:ring-2 transition-all ${
+                          passwordMismatch
+                            ? 'border-rose-500/50 focus:ring-rose-500/30 focus:border-rose-500/50'
+                            : 'border-white/5 focus:ring-primary/40 focus:border-primary/40'
+                        }`}
+                        placeholder="Repeat password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-stone-500 hover:text-stone-300 transition-colors"
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {(error || passwordMismatch) && (
                     <div className="p-3 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-sm font-medium flex items-center">
-                      <span className="mr-2">⚠️</span> {error}
+                      <span className="mr-2">⚠️</span>
+                      {passwordMismatch ? 'Passwords do not match' : error}
                     </div>
                   )}
 
@@ -232,6 +269,15 @@ export default function AuthPage() {
               </TabPanel>
             </TabPanels>
           </TabGroup>
+
+          <div className="mt-5 text-center">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-stone-500 hover:text-primary transition-colors font-medium"
+            >
+              Forgot your password?
+            </Link>
+          </div>
         </div>
 
         <p className="mt-8 text-center text-sm text-stone-400">

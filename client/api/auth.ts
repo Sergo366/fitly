@@ -8,6 +8,7 @@ export interface AuthResponse {
 export interface AuthCredentials {
   email: string;
   password?: string;
+  confirmPassword?: string;
 }
 
 export const authApi = {
