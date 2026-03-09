@@ -60,7 +60,7 @@ export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: 
             <button
               key={cat}
               onClick={() => onSelectCategory(cat)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
+              className={`w-full flex items-center cursor-pointer gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
                 isActive 
                   ? 'bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.1)]' 
                   : 'text-stone-400 hover:text-white hover:bg-white/5 border border-transparent'

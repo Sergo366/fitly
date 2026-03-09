@@ -49,12 +49,12 @@ export default function CategoryPage() {
           <div className="animate-in fade-in slide-in-from-right-4 duration-500">
             <button
               onClick={() => router.push('/wardrobe')}
-              className="flex items-center gap-2 text-stone-400 hover:text-white transition-colors mb-8 group"
+              className="flex items-center gap-2 text-stone-400 hover:text-white transition-colors mb-8 group cursor-pointer"
             >
               <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </div>
-              <span className="font-semibold tracking-tight cursor-pointer">Back to overview</span>
+              <span className="font-semibold tracking-tight">Back to overview</span>
             </button>
 
             <div className="flex items-baseline justify-between mb-12">
