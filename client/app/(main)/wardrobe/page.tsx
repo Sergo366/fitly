@@ -74,7 +74,7 @@ export default function WardrobePage() {
       <div className="flex-1 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="animate-in fade-in slide-in-from-left-4 duration-500">
-            <header className="mb-12">
+            <header className="mb-8">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 shadow-sm">
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
@@ -121,7 +121,7 @@ export default function WardrobePage() {
               </div>
             </header>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Object.entries(groupedClothes).map(([category, items]) => (
                 <WardrobeCategory
                   key={category}
