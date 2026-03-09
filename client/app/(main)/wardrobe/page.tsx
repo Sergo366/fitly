@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { CATEGORY_TYPES } from '@fitly/shared';
 import { useGetClothes } from '@/hooks/use-clothes';
 import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
-import ClothingCard from '@/components/wardrobe/ClothingCard';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
-import { ChevronLeft, Shirt, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Eye, EyeOff } from 'lucide-react';
 
 export default function WardrobePage() {
+  const router = useRouter();
   const { data: clothes, isLoading } = useGetClothes();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showHidden, setShowHidden] = useState(false);
 
   const filteredClothes = useMemo(() => {
@@ -23,18 +23,15 @@ export default function WardrobePage() {
   const groupedClothes = useMemo(() => {
     const groups: Record<string, Clothing[]> = {};
 
-    // Initialize groups for all category types
     Object.values(CATEGORY_TYPES).forEach(cat => {
       groups[cat] = [];
     });
 
-    // Populate groups
     filteredClothes.forEach((item: Clothing) => {
       const cat = (item.category as string) || CATEGORY_TYPES.Other;
       if (groups[cat]) {
         groups[cat].push(item);
       } else {
-        // Fallback for unexpected categories
         const otherCat = CATEGORY_TYPES.Other as string;
         if (!groups[otherCat]) groups[otherCat] = [];
         groups[otherCat].push(item);
@@ -64,105 +61,66 @@ export default function WardrobePage() {
       {/* Sidebar - Persistent on Desktop */}
       <div className="hidden md:block">
         <WardrobeSidebar 
-          selectedCategory={selectedCategory} 
-          onSelectCategory={setSelectedCategory} 
+          selectedCategory={null} 
+          onSelectCategory={(cat) => cat && router.push(`/wardrobe/${cat}`)} 
         />
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Detailed view of a category */}
-          {selectedCategory ? (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className="flex items-center gap-2 text-stone-400 hover:text-white transition-colors mb-8 group"
-              >
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <ChevronLeft className="w-4 h-4" />
+          <div className="animate-in fade-in slide-in-from-left-4 duration-500">
+            <header className="mb-12">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 text-primary" />
                 </div>
-                <span className="font-semibold tracking-tight cursor-pointer">Back to overview</span>
-              </button>
-
-              <div className="flex items-baseline justify-between mb-12">
+                <span className="text-stone-400 font-bold tracking-[0.4em] uppercase text-[9px]">Collection</span>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                  <h1 className="text-4xl font-bold text-white tracking-tight">{selectedCategory}</h1>
-                  <p className="text-stone-500 mt-2 font-medium">
-                    {(groupedClothes[selectedCategory] || []).length} items in your collection
+                  <h1 className="text-5xl font-extrabold text-white tracking-tight">Your Wardrobe</h1>
+                  <p className="text-stone-300 mt-4 text-lg max-w-2xl leading-relaxed font-medium">
+                    Manage your personal style collection. Explore categories to see 
+                    every detail and refine your seasonal looks.
                   </p>
                 </div>
+                
+                <button
+                  onClick={() => setShowHidden(!showHidden)}
+                  className={`
+                    flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border
+                    ${showHidden 
+                      ? 'bg-primary/20 border-primary/30 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)]' 
+                      : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'}
+                  `}
+                >
+                  {showHidden ? (
+                    <>
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Showing Hidden Items</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeOff className="w-3.5 h-3.5" />
+                      <span>Show Hidden Items</span>
+                    </>
+                  )}
+                </button>
               </div>
+            </header>
 
-              {(groupedClothes[selectedCategory] || []).length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                  {(groupedClothes[selectedCategory] || []).map(item => (
-                    <ClothingCard key={item.id} item={item} />
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-24 bg-white/[0.02] border border-dashed border-white/5 rounded-3xl">
-                  <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-                    <Shirt className="w-8 h-8 text-stone-600" />
-                  </div>
-                  <p className="text-stone-500 font-medium">No items in this category yet.</p>
-                </div>
-              )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {Object.entries(groupedClothes).map(([category, items]) => (
+                <WardrobeCategory
+                  key={category}
+                  category={category}
+                  items={items || []}
+                  onOpen={(cat) => router.push(`/wardrobe/${cat}`)}
+                />
+              ))}
             </div>
-          ) : (
-            <div className="animate-in fade-in slide-in-from-left-4 duration-500">
-              <header className="mb-12">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 shadow-sm">
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  </div>
-                  <span className="text-stone-400 font-bold tracking-[0.4em] uppercase text-[9px]">Collection</span>
-                </div>
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                  <div>
-                    <h1 className="text-5xl font-extrabold text-white tracking-tight">Your Wardrobe</h1>
-                    <p className="text-stone-300 mt-4 text-lg max-w-2xl leading-relaxed font-medium">
-                      Manage your personal style collection. Explore categories to see 
-                      every detail and refine your seasonal looks.
-                    </p>
-                  </div>
-                  
-                  <button
-                    onClick={() => setShowHidden(!showHidden)}
-                    className={`
-                      flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border
-                      ${showHidden 
-                        ? 'bg-primary/20 border-primary/30 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)]' 
-                        : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'}
-                    `}
-                  >
-                    {showHidden ? (
-                      <>
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>Showing Hidden Items</span>
-                      </>
-                    ) : (
-                      <>
-                        <EyeOff className="w-3.5 h-3.5" />
-                        <span>Show Hidden Items</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </header>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {Object.entries(groupedClothes).map(([category, items]) => (
-                  <WardrobeCategory
-                    key={category}
-                    category={category}
-                    items={items || []}
-                    onOpen={setSelectedCategory}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
