@@ -60,10 +60,14 @@ export class AuthService {
     };
   }
 
-  async updateRtHash(userId: string, rt: string): Promise<void> {
+  async updateRtHash(userId: string, rt: string) {
     const hash = await bcrypt.hash(rt, 10);
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7); // TTL 7 days
+
     await this.usersRepository.update(userId, {
       hashedRt: hash,
+      rtExpiresAt: expiresAt,
     });
   }
 
@@ -104,18 +108,30 @@ export class AuthService {
   }
 
   async logout(userId: string): Promise<void> {
-    await this.usersRepository.update(userId, { hashedRt: null });
+    await this.usersRepository.update(userId, {
+      hashedRt: null,
+      rtExpiresAt: null,
+    });
   }
 
   async refreshTokens(userId: string, rt: string): Promise<Tokens> {
     const user = await this.usersRepository.findOne({ where: { id: userId } });
-    if (!user || !user.hashedRt) throw new ForbiddenException('Access Denied');
+
+    if (!user || !user.hashedRt || !user.rtExpiresAt) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    if (new Date() > user.rtExpiresAt) {
+      await this.logout(userId);
+      throw new ForbiddenException('Refresh Token Expired');
+    }
 
     const rtMatches = await bcrypt.compare(rt, user.hashedRt);
     if (!rtMatches) throw new ForbiddenException('Access Denied');
 
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRtHash(user.id, tokens.refresh_token);
+
     return tokens;
   }
 }

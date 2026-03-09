@@ -53,11 +53,13 @@ export class AuthController {
   ) {
     const tokens = await this.authService.signup(body);
     this.setCookies(res, tokens);
-    return tokens;
+
+    return {
+      user: tokens.user,
+    };
   }
 
   @Public()
-  @HttpCode(HttpStatus.OK)
   @Post('signin')
   async signin(
     @Body() body: SigninDto,
@@ -69,7 +71,10 @@ export class AuthController {
     }
     const tokens = await this.authService.login(user);
     this.setCookies(res, tokens);
-    return tokens;
+
+    return {
+      user: tokens.user,
+    };
   }
 
   @Post('logout')
@@ -93,6 +98,9 @@ export class AuthController {
   ) {
     const tokens = await this.authService.refreshTokens(userId, rt);
     this.setCookies(res, tokens);
-    return tokens;
+
+    return {
+      user: tokens.user,
+    };
   }
 }

@@ -25,6 +25,10 @@ export class User {
   @Exclude()
   hashedRt: string | null;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  @Exclude()
+  rtExpiresAt: Date | null;
+
   @CreateDateColumn()
   createdAt: Date;
 
