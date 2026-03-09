@@ -5,6 +5,9 @@ import { Clothing } from '@/api/clothes';
 import Image from 'next/image';
 import { ChevronRight, Shirt, MoreVertical, EyeOff, Pencil, Trash2 } from 'lucide-react';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
+import { CARD_STYLES, MENU_STYLES } from '@/lib/styles/header';
+import { classNames } from '@/lib/styles/classNames';
+import { DROPDOWN_TRANSITION } from '@/lib/styles/header';
 
 interface WardrobeCategoryProps {
   category: string;
@@ -21,19 +24,14 @@ export default function WardrobeCategory({ category, items, onOpen }: WardrobeCa
     console.log(`${action} category:`, category);
   };
 
-  const menuItemStyles = "flex w-full items-center gap-3 rounded-xl cursor-pointer px-4 py-2.5 text-[13px] font-semibold transition-all";
-  const iconStyles = "w-4 h-4";
-
   return (
     <div 
       onClick={() => onOpen(category)}
-      className="group relative bg-[#0e0e11] border border-white/10 md:border-white/[0.04] rounded-3xl p-4 
-                 hover:bg-[#121215] hover:border-primary/20 transition-all duration-500 cursor-pointer 
-                 overflow-hidden hover:shadow-[0_0_40px_rgba(212,175,53,0.03)]"
+      className={CARD_STYLES.base}
     >  
-      <div className="flex justify-between items-center mb-5 relative z-20">
+      <div className={CARD_STYLES.header}>
         <div className="flex flex-col gap-1">
-          <h2 className="text-xl font-medium text-white/90 group-hover:text-white transition-colors duration-300">
+          <h2 className={CARD_STYLES.title}>
             {category}
           </h2>
         </div>
@@ -44,33 +42,29 @@ export default function WardrobeCategory({ category, items, onOpen }: WardrobeCa
               <>
                 <MenuButton 
                   onClick={(e) => e.stopPropagation()}
-                  className={`
-                    p-2 cursor-pointer rounded-xl transition-all duration-300
-                    ${open 
-                      ? 'bg-primary/10 text-primary' 
-                      : 'text-stone-500 hover:text-white hover:bg-white/5'}
-                  `}
+                  className={classNames(
+                    "p-2 cursor-pointer rounded-xl transition-all duration-300",
+                    open ? "bg-primary/10 text-primary" : "text-stone-500 hover:text-white hover:bg-white/5"
+                  )}
                 >
                   <MoreVertical className="w-4 h-4" />
                 </MenuButton>
 
                 <Transition
                   as={Fragment}
-                  enter="transition ease-out duration-150"
-                  enterFrom="transform opacity-0 scale-98"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-100"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-98"
+                  {...DROPDOWN_TRANSITION}
                 >
-                  <MenuItems className="absolute right-0 mt-3 w-44 origin-top-right rounded-2xl bg-[#16161a] border border-white/[0.05] shadow-2xl focus:outline-none z-[100] overflow-hidden p-1">
+                  <MenuItems className={classNames(MENU_STYLES.items, "w-44 px-1.5")}>
                     <MenuItem>
                       {({ focus }) => (
                         <button
                           onClick={(e) => handleAction(e, 'Hide')}
-                          className={`${focus ? 'bg-white/5 text-white' : 'text-stone-400'} ${menuItemStyles}`}
+                          className={classNames(
+                            focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
+                            MENU_STYLES.item
+                          )}
                         >
-                          <EyeOff className={iconStyles} />
+                          <EyeOff className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
                           <span>Hide</span>
                         </button>
                       )}
@@ -79,21 +73,27 @@ export default function WardrobeCategory({ category, items, onOpen }: WardrobeCa
                       {({ focus }) => (
                         <button
                           onClick={(e) => handleAction(e, 'Edit')}
-                          className={`${focus ? 'bg-white/5 text-white' : 'text-stone-400'} ${menuItemStyles}`}
+                          className={classNames(
+                            focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
+                            MENU_STYLES.item
+                          )}
                         >
-                          <Pencil className={iconStyles} />
+                          <Pencil className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
                           <span>Rename</span>
                         </button>
                       )}
                     </MenuItem>
-                    <div className="h-px bg-white/5 my-1 mx-1" />
+                    <div className={MENU_STYLES.separator} />
                     <MenuItem>
                       {({ focus }) => (
                         <button
                           onClick={(e) => handleAction(e, 'Delete')}
-                          className={`${focus ? 'bg-red-500/10 text-red-500' : 'text-red-500/60'} ${menuItemStyles}`}
+                          className={classNames(
+                            focus ? MENU_STYLES.itemDanger : MENU_STYLES.itemDangerInactive,
+                            MENU_STYLES.item
+                          )}
                         >
-                          <Trash2 className={iconStyles} />
+                          <Trash2 className={MENU_STYLES.icon} />
                           <span>Delete</span>
                         </button>
                       )}
