@@ -116,7 +116,7 @@ export default function WardrobePage() {
                   className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border bg-white/5 border-white/10 text-stone-400 hover:text-white cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>Add new category</span>
+                  <span>Add category</span>
                 </button>
               </div>
             </header>

@@ -34,7 +34,7 @@ export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: 
   const categories = Object.values(CATEGORY_TYPES);
 
   return (
-    <aside className="w-64 flex flex-col gap-2 p-4 bg-white/[0.02] border-r border-white/5 h-[calc(100vh-80px)] sticky top-20 overflow-y-auto custom-scrollbar">
+    <aside className="w-54 flex flex-col gap-2 p-4 bg-white/[0.02] border-r border-white/5 h-[calc(100vh-80px)] sticky top-20 overflow-y-auto custom-scrollbar">
       <div className="mb-4">
         <h2 className="text-xs font-bold text-stone-500 uppercase tracking-widest px-4 mb-4">Categories</h2>
         
