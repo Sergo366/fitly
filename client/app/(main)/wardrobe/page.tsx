@@ -7,7 +7,7 @@ import { useGetClothes } from '@/hooks/use-clothes';
 import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
-import { Sparkles, Eye, EyeOff } from 'lucide-react';
+import { Sparkles, Eye, EyeOff, Plus } from 'lucide-react';
 
 export default function WardrobePage() {
   const router = useRouter();
@@ -40,6 +40,10 @@ export default function WardrobePage() {
 
     return groups;
   }, [filteredClothes]);
+
+  const handleAddNewCategory = () => {
+    console.log('Add new category clicked');
+  };
 
   if (isLoading) {
     return (
@@ -89,7 +93,7 @@ export default function WardrobePage() {
                 <button
                   onClick={() => setShowHidden(!showHidden)}
                   className={`
-                    flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border
+                    flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border cursor-pointer
                     ${showHidden 
                       ? 'bg-primary/20 border-primary/30 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)]' 
                       : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'}
@@ -106,6 +110,13 @@ export default function WardrobePage() {
                       <span>Show Hidden Items</span>
                     </>
                   )}
+                </button>
+                <button
+                  onClick={handleAddNewCategory}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border bg-white/5 border-white/10 text-stone-400 hover:text-white cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add new category</span>
                 </button>
               </div>
             </header>
