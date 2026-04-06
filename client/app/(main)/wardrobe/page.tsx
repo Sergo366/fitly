@@ -1,25 +1,23 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { CATEGORY_TYPES } from '@fitly/shared';
 import { useGetClothes } from '@/hooks/use-clothes';
 import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
-import { Sparkles, Eye, EyeOff, Plus } from 'lucide-react';
+import { Sparkles, Plus } from 'lucide-react';
 import { SPECIAL_SECTION_CONFIG } from '@/app/(main)/wardrobe/[category]/const';
 
 export default function WardrobePage() {
   const router = useRouter();
   const { data: clothes, isLoading } = useGetClothes();
-  const [showHidden, setShowHidden] = useState(false);
 
   const filteredClothes = useMemo(() => {
     if (!clothes) return [];
-    if (showHidden) return clothes;
     return clothes.filter(item => !item.isHidden);
-  }, [clothes, showHidden]);
+  }, [clothes]);
 
   const groupedClothes = useMemo(() => {
     const groups: Record<string, Clothing[]> = {};
@@ -90,28 +88,6 @@ export default function WardrobePage() {
                     every detail and refine your seasonal looks.
                   </p>
                 </div>
-                
-                <button
-                  onClick={() => setShowHidden(!showHidden)}
-                  className={`
-                    flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border cursor-pointer
-                    ${showHidden 
-                      ? 'bg-primary/20 border-primary/30 text-primary shadow-[0_0_20px_rgba(168,85,247,0.15)]' 
-                      : 'bg-white/5 border-white/10 text-stone-400 hover:bg-white/10 hover:text-white'}
-                  `}
-                >
-                  {showHidden ? (
-                    <>
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>Showing Hidden Items</span>
-                    </>
-                  ) : (
-                    <>
-                      <EyeOff className="w-3.5 h-3.5" />
-                      <span>Show Hidden Items</span>
-                    </>
-                  )}
-                </button>
                 <button
                   onClick={handleAddNewCategory}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-xs transition-all border bg-white/5 border-white/10 text-stone-400 hover:text-white cursor-pointer"
