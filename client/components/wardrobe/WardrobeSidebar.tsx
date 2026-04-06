@@ -10,7 +10,10 @@ import {
   Watch, 
   PersonStanding, 
   MoreHorizontal,
-  LayoutGrid
+  LayoutGrid,
+  Heart,
+  EyeOff,
+  DollarSign,
 } from 'lucide-react';
 import { CATEGORY_TYPES } from '@fitly/shared';
 
@@ -29,6 +32,30 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
   [CATEGORY_TYPES.FullBody]: PersonStanding,
   [CATEGORY_TYPES.Other]: MoreHorizontal,
 };
+
+const SPECIAL_SECTIONS = [
+  {
+    slug: 'favorites',
+    label: 'Favorites',
+    Icon: Heart,
+    activeClass: 'bg-primary/10 text-primary border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.1)]',
+    iconActiveClass: 'text-primary fill-primary',
+  },
+  {
+    slug: 'hidden',
+    label: 'Hidden',
+    Icon: EyeOff,
+    activeClass: 'bg-white/10 text-white border-white/10',
+    iconActiveClass: 'text-white',
+  },
+  {
+    slug: 'for-sale',
+    label: 'For Sale',
+    Icon: DollarSign,
+    activeClass: 'bg-green-500/10 text-green-400 border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]',
+    iconActiveClass: 'text-green-400',
+  },
+];
 
 export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: WardrobeSidebarProps) {
   const categories = Object.values(CATEGORY_TYPES);
@@ -71,6 +98,30 @@ export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: 
             </button>
           );
         })}
+      </div>
+
+      {/* Special Sections */}
+      <div className="mt-6">
+        <h2 className="text-xs font-bold text-stone-500 uppercase tracking-widest px-4 mb-3">Collections</h2>
+        <div className="flex flex-col gap-1">
+          {SPECIAL_SECTIONS.map(({ slug, label, Icon, activeClass, iconActiveClass }) => {
+            const isActive = selectedCategory === slug;
+            return (
+              <button
+                key={slug}
+                onClick={() => onSelectCategory(slug)}
+                className={`w-full flex items-center cursor-pointer gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group border ${
+                  isActive
+                    ? activeClass
+                    : 'text-stone-400 hover:text-white hover:bg-white/5 border-transparent'
+                }`}
+              >
+                <Icon className={`w-5 h-5 transition-all duration-300 ${isActive ? iconActiveClass : 'text-stone-500 group-hover:text-stone-300'}`} />
+                <span className="font-semibold tracking-tight">{label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </aside>
   );

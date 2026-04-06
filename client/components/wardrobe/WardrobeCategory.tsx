@@ -13,9 +13,11 @@ interface WardrobeCategoryProps {
   category: string;
   items: Clothing[];
   onOpen: (category: string) => void;
+  titleIcon?: React.ElementType;
+  hideMenu?: boolean;
 }
 
-export default function WardrobeCategory({ category, items, onOpen }: WardrobeCategoryProps) {
+export default function WardrobeCategory({ category, items, onOpen, titleIcon: TitleIcon, hideMenu }: WardrobeCategoryProps) {
   const previewItems = items.slice(0, 3);
   const count = items.length;
 
@@ -31,80 +33,89 @@ export default function WardrobeCategory({ category, items, onOpen }: WardrobeCa
     >  
       <div className={CARD_STYLES.header}>
         <div className="flex flex-col gap-1">
-          <h2 className={CARD_STYLES.title}>
-            {category}
-          </h2>
+          <div className="flex items-center gap-2">
+            {TitleIcon && <TitleIcon className="w-5 h-5 text-stone-400 group-hover:text-primary transition-colors" />}
+            <h2 className={CARD_STYLES.title}>
+              {category}
+            </h2>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
-          <Menu as="div" className="relative">
-            {({ open }) => (
-              <>
-                <MenuButton 
-                  onClick={(e) => e.stopPropagation()}
-                  className={classNames(
-                    "p-2 cursor-pointer rounded-xl transition-all duration-300",
-                    open ? "bg-primary/10 text-primary" : "text-stone-500 hover:text-white hover:bg-white/5"
-                  )}
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </MenuButton>
+        {!hideMenu ? (
+          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+            <Menu as="div" className="relative">
+              {({ open }) => (
+                <>
+                  <MenuButton 
+                    onClick={(e) => e.stopPropagation()}
+                    className={classNames(
+                      "p-2 cursor-pointer rounded-xl transition-all duration-300",
+                      open ? "bg-primary/10 text-primary" : "text-stone-500 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </MenuButton>
 
-                <Transition
-                  as={Fragment}
-                  {...DROPDOWN_TRANSITION}
-                >
-                  <MenuItems className={classNames(MENU_STYLES.items, "w-44 px-1.5")}>
-                    <MenuItem>
-                      {({ focus }) => (
-                        <button
-                          onClick={(e) => handleAction(e, 'Hide')}
-                          className={classNames(
-                            focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
-                            MENU_STYLES.item
-                          )}
-                        >
-                          <EyeOff className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
-                          <span>Hide</span>
-                        </button>
-                      )}
-                    </MenuItem>
-                    <MenuItem>
-                      {({ focus }) => (
-                        <button
-                          onClick={(e) => handleAction(e, 'Edit')}
-                          className={classNames(
-                            focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
-                            MENU_STYLES.item
-                          )}
-                        >
-                          <Pencil className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
-                          <span>Rename</span>
-                        </button>
-                      )}
-                    </MenuItem>
-                    <div className={MENU_STYLES.separator} />
-                    <MenuItem>
-                      {({ focus }) => (
-                        <button
-                          onClick={(e) => handleAction(e, 'Delete')}
-                          className={classNames(
-                            focus ? MENU_STYLES.itemDanger : MENU_STYLES.itemDangerInactive,
-                            MENU_STYLES.item
-                          )}
-                        >
-                          <Trash2 className={MENU_STYLES.icon} />
-                          <span>Delete</span>
-                        </button>
-                      )}
-                    </MenuItem>
-                  </MenuItems>
-                </Transition>
-              </>
-            )}
-          </Menu>
-          <ChevronRight className="w-4 h-4 text-stone-500 group-hover:text-primary transition-colors" />
-        </div>
+                  <Transition
+                    as={Fragment}
+                    {...DROPDOWN_TRANSITION}
+                  >
+                    <MenuItems className={classNames(MENU_STYLES.items, "w-44 px-1.5")}>
+                      <MenuItem>
+                        {({ focus }) => (
+                          <button
+                            onClick={(e) => handleAction(e, 'Hide')}
+                            className={classNames(
+                              focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
+                              MENU_STYLES.item
+                            )}
+                          >
+                            <EyeOff className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
+                            <span>Hide</span>
+                          </button>
+                        )}
+                      </MenuItem>
+                      <MenuItem>
+                        {({ focus }) => (
+                          <button
+                            onClick={(e) => handleAction(e, 'Edit')}
+                            className={classNames(
+                              focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
+                              MENU_STYLES.item
+                            )}
+                          >
+                            <Pencil className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
+                            <span>Rename</span>
+                          </button>
+                        )}
+                      </MenuItem>
+                      <div className={MENU_STYLES.separator} />
+                      <MenuItem>
+                        {({ focus }) => (
+                          <button
+                            onClick={(e) => handleAction(e, 'Delete')}
+                            className={classNames(
+                              focus ? MENU_STYLES.itemDanger : MENU_STYLES.itemDangerInactive,
+                              MENU_STYLES.item
+                            )}
+                          >
+                            <Trash2 className={MENU_STYLES.icon} />
+                            <span>Delete</span>
+                          </button>
+                        )}
+                      </MenuItem>
+                    </MenuItems>
+                  </Transition>
+                </>
+              )}
+            </Menu>
+            <ChevronRight className="w-4 h-4 text-stone-500 group-hover:text-primary transition-colors" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+            <ChevronRight className="w-4 h-4 text-stone-500 group-hover:text-primary transition-colors" />
+          </div>
+        )}
       </div>
 
       <div className="flex -space-x-5 items-center relative z-10">

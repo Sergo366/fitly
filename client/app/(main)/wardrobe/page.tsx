@@ -8,6 +8,7 @@ import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
 import { Sparkles, Eye, EyeOff, Plus } from 'lucide-react';
+import { SPECIAL_SECTION_CONFIG } from '@/app/(main)/wardrobe/[category]/const';
 
 export default function WardrobePage() {
   const router = useRouter();
@@ -131,6 +132,30 @@ export default function WardrobePage() {
                 />
               ))}
             </div>
+
+            {/* Collections divider */}
+            <div className="flex items-center gap-4 mt-12 mb-6">
+              <div className="h-px flex-1 bg-white/5" />
+              <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">Collections</span>
+              <div className="h-px flex-1 bg-white/5" />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {Object.entries(SPECIAL_SECTION_CONFIG).map(([slug, config]) => {
+                const collectionItems = clothes ? clothes.filter(config.filter) : [];
+                return (
+                  <WardrobeCategory
+                    key={slug}
+                    category={config.label}
+                    items={collectionItems}
+                    onOpen={() => router.push(`/wardrobe/${slug}`)}
+                    titleIcon={config.Icon}
+                    hideMenu={true}
+                  />
+                );
+              })}
+            </div>
+
           </div>
         </div>
       </div>

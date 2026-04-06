@@ -6,6 +6,7 @@ import { useGetClothes } from '@/hooks/use-clothes';
 import ClothingCard from '@/components/wardrobe/ClothingCard';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
 import { ChevronLeft, Shirt } from 'lucide-react';
+import { SPECIAL_SECTION_CONFIG } from '@/app/(main)/wardrobe/[category]/const';
 
 export default function CategoryPage() {
   const params = useParams();
@@ -13,22 +14,39 @@ export default function CategoryPage() {
   const category = decodeURIComponent(params.category as string);
   const { data: clothes, isLoading } = useGetClothes();
 
+
+  const specialConfig = SPECIAL_SECTION_CONFIG[category];
+
   const categoryItems = useMemo(() => {
     if (!clothes) return [];
-    return clothes.filter(item => 
-      !item.isHidden && 
+
+    if (specialConfig) {
+      return clothes.filter(specialConfig.filter);
+    }
+
+    // Regular clothing category — hide hidden items
+    return clothes.filter(item =>
+      !item.isHidden &&
       (item.category === category)
     );
-  }, [clothes, category]);
+  }, [clothes, category, specialConfig]);
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-        <p className="mt-4 text-stone-500 font-medium animate-pulse">Loading {category}...</p>
+        <p className="mt-4 text-stone-500 font-medium animate-pulse">
+          Loading {specialConfig?.label ?? category}...
+        </p>
       </div>
     );
   }
+
+  const pageTitle = specialConfig?.label ?? category;
+  const pageDescription = specialConfig?.description ?? `${categoryItems.length} items in your collection`;
+  const EmptyIcon = specialConfig?.Icon ?? Shirt;
+  const emptyIconClass = specialConfig?.iconClass ?? 'text-stone-600';
+  const emptyMessage = specialConfig?.EmptyMessage ?? 'No items in this category yet.';
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-transparent">
@@ -59,9 +77,18 @@ export default function CategoryPage() {
 
             <div className="flex items-baseline justify-between mb-12">
               <div>
-                <h1 className="text-4xl font-bold text-white tracking-tight">{category}</h1>
+                <div className="flex items-center gap-3 mb-2">
+                  {specialConfig && (
+                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5">
+                      <EmptyIcon className={`w-4 h-4 ${emptyIconClass}`} />
+                    </div>
+                  )}
+                  <h1 className="text-4xl font-bold text-white tracking-tight">{pageTitle}</h1>
+                </div>
                 <p className="text-stone-500 mt-2 font-medium">
-                  {categoryItems.length} items in your collection
+                  {specialConfig
+                    ? `${categoryItems.length} ${pageDescription}`
+                    : `${categoryItems.length} items in your collection`}
                 </p>
               </div>
             </div>
@@ -75,9 +102,9 @@ export default function CategoryPage() {
             ) : (
               <div className="flex flex-col items-center justify-center py-24 bg-white/[0.02] border border-dashed border-white/5 rounded-3xl">
                 <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-                  <Shirt className="w-8 h-8 text-stone-600" />
+                  <EmptyIcon className={`w-8 h-8 ${emptyIconClass}`} />
                 </div>
-                <p className="text-stone-500 font-medium">No items in this category yet.</p>
+                <p className="text-stone-500 font-medium">{emptyMessage}</p>
               </div>
             )}
           </div>
@@ -86,3 +113,6 @@ export default function CategoryPage() {
     </div>
   );
 }
+
+
+
