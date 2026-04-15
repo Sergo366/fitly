@@ -72,6 +72,10 @@ export class AuthService {
   }
 
   async signup(signupDto: SignupDto): Promise<Tokens> {
+    if (signupDto.password !== signupDto.confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
     const existingUser = await this.usersRepository.findOne({
       where: { email: signupDto.email },
     });
