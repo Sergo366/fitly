@@ -36,13 +36,13 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/auth/refreshToken', // Only sent to refreshToken route
+      path: '/',
     });
   }
 
   private clearCookies(res: Response) {
     res.clearCookie('access_token', { path: '/' });
-    res.clearCookie('refresh_token', { path: '/auth/refreshToken' });
+    res.clearCookie('refresh_token', { path: '/' });
   }
 
   @Public()
@@ -88,6 +88,7 @@ export class AuthController {
     return { success: true };
   }
 
+  @Public()
   @UseGuards(RtGuard)
   @Post('refreshToken')
   @HttpCode(HttpStatus.OK)
