@@ -8,6 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Clothing } from '../clothes/clothing.entity';
+import { UserCategory } from '../categories/user-category.entity';
 
 @Entity()
 export class User {
@@ -37,4 +38,7 @@ export class User {
 
   @OneToMany(() => Clothing, (clothing) => clothing.user)
   clothes: Clothing[];
+
+  @OneToMany(() => UserCategory, (category) => category.user)
+  categories: UserCategory[];
 }

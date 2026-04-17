@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../users/user.entity';
 import { SignupDto } from './dtos/signup.dto';
 import { JwtService } from '@nestjs/jwt';
+import { CategoriesService } from '../categories/categories.service';
 
 export interface Tokens {
   access_token: string;
@@ -24,6 +25,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
+    private categoriesService: CategoriesService,
   ) {}
 
   async getTokens(userId: string, email: string): Promise<Tokens> {
@@ -94,6 +96,10 @@ export class AuthService {
     const savedUser = await this.usersRepository.save(user);
     const tokens = await this.getTokens(savedUser.id, savedUser.email);
     await this.updateRtHash(savedUser.id, tokens.refresh_token);
+
+    // Initialize default categories for the user
+    await this.categoriesService.initUserCategories(savedUser.id);
+
     return tokens;
   }
 

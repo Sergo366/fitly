@@ -15,6 +15,15 @@ export const CATEGORY_TYPES = {
 export type Category = (typeof CATEGORY_TYPES)[keyof typeof CATEGORY_TYPES];
 
 export const CATEGORIES = Object.values(CATEGORY_TYPES) as Category[];
+// CATEGORIES
+// {
+//   id: string;
+//   userId: user relation;
+//   name: string;
+//   iconName: string;
+//   categoryTypes: []{ id: string; name: string; };
+//   isHidden: boolean;
+// }
 
 export const TYPES = {
     [CATEGORY_TYPES.Tops]: ['T-Shirt', 'Polo', 'Shirt', 'Blouse', 'Sweater', 'Hoodie', 'Top', 'Other'],

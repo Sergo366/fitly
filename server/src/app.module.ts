@@ -10,6 +10,7 @@ import { ClothesModule } from './clothes/clothes.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AiModule } from './ai/ai.module';
 import { GoogleSearchModule } from './google-search/google-search.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GoogleSearchModule } from './google-search/google-search.module';
     ClothesModule,
     AiModule,
     GoogleSearchModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [
