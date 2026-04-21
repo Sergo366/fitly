@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { clothesApi, SaveClothingData } from '@/api/clothes';
+import { getCategories } from '@/api/categories';
 
 export const useAddClothing = () => {
     const queryClient = useQueryClient();

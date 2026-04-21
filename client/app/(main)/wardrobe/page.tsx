@@ -9,10 +9,12 @@ import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
 import { Sparkles, Plus } from 'lucide-react';
 import { SPECIAL_SECTION_CONFIG } from '@/app/(main)/wardrobe/[category]/const';
+import { useCategories } from '@/hooks/useCategories';
 
 export default function WardrobePage() {
   const router = useRouter();
-  const { data: clothes, isLoading } = useGetClothes();
+  const { data: clothes, isLoading: isLoadingClothes } = useGetClothes();
+  const { data: categoriesData, isLoading: isLoadingCategories } = useCategories()
 
   const filteredClothes = useMemo(() => {
     if (!clothes) return [];
@@ -22,15 +24,16 @@ export default function WardrobePage() {
   const groupedClothes = useMemo(() => {
     const groups: Record<string, Clothing[]> = {};
 
-    Object.values(CATEGORY_TYPES).forEach(cat => {
-      groups[cat] = [];
+    categoriesData?.forEach(cat => {
+      groups[cat.name] = [];
     });
 
     filteredClothes.forEach((item: Clothing) => {
-      const cat = (item.category as string) || CATEGORY_TYPES.Other;
+      const cat = (item.category as string) || CATEGORY_TYPES.Other; // todo: remove CATEGORY_TYPES.Other
       if (groups[cat]) {
         groups[cat].push(item);
       } else {
+        // todo: remove this condition after full category API implementation
         const otherCat = CATEGORY_TYPES.Other as string;
         if (!groups[otherCat]) groups[otherCat] = [];
         groups[otherCat].push(item);
@@ -38,11 +41,12 @@ export default function WardrobePage() {
     });
 
     return groups;
-  }, [filteredClothes]);
+  }, [categoriesData, filteredClothes]);
 
   const handleAddNewCategory = () => {
     console.log('Add new category clicked');
   };
+  const isLoading = isLoadingCategories || isLoadingClothes;
 
   if (isLoading) {
     return (
