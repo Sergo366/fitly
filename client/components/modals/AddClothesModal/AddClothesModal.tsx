@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild, Field, Input, Label, Select } from '@headlessui/react';
 import { X, Check, Loader2 } from 'lucide-react';
 import { SerperImageResult } from '@/api/clothes';
 import Image from 'next/image';
-import { CATEGORIES, SEASONS, TYPES, Category, Season } from '@fitly/shared';
+import { SEASONS, Category, Season } from '@fitly/shared';
 import { useSaveClothing } from '@/hooks/use-clothes';
 import { defaultFormValues } from './const';
 import { useToast } from '@/hooks/use-toast/use-toast';
+import { useCategories } from '@/hooks/useCategories';
 
 interface AddClothesModalProps {
     isOpen: boolean;
@@ -19,11 +20,21 @@ interface AddClothesModalProps {
 
 export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddClothesModalProps) {
     const { toast } = useToast();
+    const { data: categoriesData } = useCategories()
 
     const [step, setStep] = useState<'selection' | 'details'>('selection');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [formData, setFormData] = useState(defaultFormValues);
     const { mutate: saveClothing, isPending: isSaving } = useSaveClothing();
+
+    const categoryTypes = useMemo(() => {
+      if (!formData.category || !categoriesData) {
+        return [];
+      }
+
+      return categoriesData.find((category) => category.name === formData.category)?.categoryTypes ?? []
+
+    }, [formData.category, categoriesData])
 
     const handleConfirm = () => {
         if (selectedImage) {
@@ -208,8 +219,8 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                                         className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
                                                     >
                                                         <option value="" disabled>Select category</option>
-                                                        {CATEGORIES.map((category) => (
-                                                            <option key={category} value={category}>{category}</option>
+                                                        {categoriesData?.map((category) => (
+                                                            <option key={category.id} value={category.name}>{category.name}</option>
                                                         ))}
                                                     </Select>
                                                 </div>
@@ -225,8 +236,8 @@ export function AddClothesModal({ isOpen, onClose, searchResults, ticker }: AddC
                                                         disabled={!formData.category}
                                                     >
                                                         <option value="" disabled>Select type</option>
-                                                        {formData.category && TYPES[formData.category as keyof typeof TYPES].map((type) => (
-                                                            <option key={type} value={type}>{type}</option>
+                                                        {categoryTypes?.map((type) => (
+                                                            <option key={type.id} value={type.name}>{type.name}</option>
                                                         ))}
                                                     </Select>
                                                 </div>
