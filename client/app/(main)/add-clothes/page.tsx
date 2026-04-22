@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Upload, X, Image as ImageIcon, CheckCircle2, Loader2 } from 'lucide-react';
 import { useAddClothing } from '@/hooks/use-clothes';
-import { useToast } from '@/hooks/use-toast/use-toast';
+import { useToast } from '@/hooks/useToast';
 
 const AddClothesModal = dynamic(
     () => import('@/components/modals/AddClothesModal/AddClothesModal').then(mod => mod.AddClothesModal),

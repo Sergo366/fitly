@@ -1,7 +1,7 @@
 import apiClient from '@/lib/api-client';
 
 export type Category = {
-  id: number;
+  id: string;
   name: string;
   iconName: string;
   isHidden: boolean;
@@ -17,5 +17,16 @@ export const getCategories = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching categories:', error);
+  }
+}
+
+export const removeUserCategory = async (categoryId: string) => {
+  try {
+    const response = await apiClient.delete<Category[]>('/categories', {
+      data: { categoryId },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error removing category:', error);
   }
 }

@@ -41,4 +41,12 @@ export class CategoriesService {
       order: { createdAt: 'ASC' },
     });
   }
+
+  async removeUserCategory(
+    userId: string,
+    categoryId: string,
+  ): Promise<UserCategory[]> {
+    await this.categoriesRepository.delete({ id: categoryId, userId });
+    return this.findAllByUser(userId);
+  }
 }

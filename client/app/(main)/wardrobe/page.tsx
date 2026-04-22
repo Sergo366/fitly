@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { CATEGORY_TYPES } from '@fitly/shared';
 import { useGetClothes } from '@/hooks/use-clothes';
 import { Clothing } from '@/api/clothes';
 import WardrobeCategory from '@/components/wardrobe/WardrobeCategory';
@@ -22,21 +21,31 @@ export default function WardrobePage() {
   }, [clothes]);
 
   const groupedClothes = useMemo(() => {
-    const groups: Record<string, Clothing[]> = {};
+    const groups: Record<string, { id: string; name: string; items: Clothing[] }> = {};
 
     categoriesData?.forEach(cat => {
-      groups[cat.name] = [];
+      groups[cat.id] = { id: cat.id, name: cat.name, items: [] };
     });
 
     filteredClothes.forEach((item: Clothing) => {
-      const cat = (item.category as string) || CATEGORY_TYPES.Other; // todo: remove CATEGORY_TYPES.Other
-      if (groups[cat]) {
-        groups[cat].push(item);
+      const categoryIdOrName = item.category as string;
+      
+      // Try by ID first
+      if (categoryIdOrName && groups[categoryIdOrName]) {
+        groups[categoryIdOrName].items.push(item);
+        return;
+      }
+
+      // Try by name as fallback
+      const catObj = categoriesData?.find(c => c.name === categoryIdOrName);
+      if (catObj && groups[catObj.id]) {
+        groups[catObj.id].items.push(item);
       } else {
-        // todo: remove this condition after full category API implementation
-        const otherCat = CATEGORY_TYPES.Other as string;
-        if (!groups[otherCat]) groups[otherCat] = [];
-        groups[otherCat].push(item);
+        // Handle "Other" or unknown - for now just skip or put in a default if exists
+        const defaultCat = categoriesData?.[0]; // placeholder logic
+        if (defaultCat && groups[defaultCat.id]) {
+          // groups[defaultCat.id].items.push(item);
+        }
       }
     });
 
@@ -103,12 +112,13 @@ export default function WardrobePage() {
             </header>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(groupedClothes).map(([category, items]) => (
+              {Object.values(groupedClothes).map((group) => (
                 <WardrobeCategory
-                  key={category}
-                  category={category}
-                  items={items || []}
-                  onOpen={(cat) => router.push(`/wardrobe/${cat}`)}
+                  key={group.id}
+                  categoryId={group.id}
+                  categoryName={group.name}
+                  items={group.items}
+                  onOpen={(id) => router.push(`/wardrobe/${id}`)}
                 />
               ))}
             </div>
@@ -126,9 +136,10 @@ export default function WardrobePage() {
                 return (
                   <WardrobeCategory
                     key={slug}
-                    category={config.label}
+                    categoryId={slug}
+                    categoryName={config.label}
                     items={collectionItems}
-                    onOpen={() => router.push(`/wardrobe/${slug}`)}
+                    onOpen={(id) => router.push(`/wardrobe/${id}`)}
                     titleIcon={config.Icon}
                     hideMenu={true}
                   />

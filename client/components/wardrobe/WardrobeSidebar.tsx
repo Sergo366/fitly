@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useCategories } from '@/hooks/useCategories';
 import { 
   Shirt, 
   Layers, 
@@ -15,7 +16,6 @@ import {
   EyeOff,
   DollarSign,
 } from 'lucide-react';
-import { CATEGORY_TYPES } from '@fitly/shared';
 
 interface WardrobeSidebarProps {
   selectedCategory: string | null;
@@ -23,14 +23,14 @@ interface WardrobeSidebarProps {
 }
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
-  [CATEGORY_TYPES.Tops]: Shirt,
-  [CATEGORY_TYPES.Bottoms]: Layers,
-  [CATEGORY_TYPES.Dresses]: Sparkles,
-  [CATEGORY_TYPES.Outerwear]: Cloud,
-  [CATEGORY_TYPES.Footwear]: Footprints,
-  [CATEGORY_TYPES.Accessories]: Watch,
-  [CATEGORY_TYPES.FullBody]: PersonStanding,
-  [CATEGORY_TYPES.Other]: MoreHorizontal,
+  'Tops': Shirt,
+  'Bottoms': Layers,
+  'Dresses': Sparkles,
+  'Outerwear': Cloud,
+  'Footwear': Footprints,
+  'Accessories': Watch,
+  'FullBody': PersonStanding,
+  'Other': MoreHorizontal,
 };
 
 const SPECIAL_SECTIONS = [
@@ -58,7 +58,7 @@ const SPECIAL_SECTIONS = [
 ];
 
 export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: WardrobeSidebarProps) {
-  const categories = Object.values(CATEGORY_TYPES);
+  const { data: categoriesData } = useCategories();
 
   return (
     <aside className="w-54 flex flex-col gap-2 p-4 bg-white/[0.02] border-r border-white/5 h-[calc(100vh-80px)] sticky top-20 overflow-y-auto custom-scrollbar">
@@ -79,14 +79,14 @@ export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: 
       </div>
 
       <div className="flex flex-col gap-1">
-        {categories.map((cat) => {
-          const Icon = CATEGORY_ICONS[cat] || MoreHorizontal;
-          const isActive = selectedCategory === cat;
+        {categoriesData?.map((cat) => {
+          const Icon = CATEGORY_ICONS[cat.name] || MoreHorizontal;
+          const isActive = selectedCategory === cat.id;
 
           return (
             <button
-              key={cat}
-              onClick={() => onSelectCategory(cat)}
+              key={cat.id}
+              onClick={() => onSelectCategory(cat.id)}
               className={`w-full flex items-center cursor-pointer gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
                 isActive 
                   ? 'bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(168,85,247,0.1)]' 
@@ -94,7 +94,7 @@ export default function WardrobeSidebar({ selectedCategory, onSelectCategory }: 
               }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? 'text-primary' : 'text-stone-500 group-hover:text-stone-300'}`} />
-              <span className="font-semibold tracking-tight">{cat}</span>
+              <span className="font-semibold tracking-tight">{cat.name}</span>
             </button>
           );
         })}

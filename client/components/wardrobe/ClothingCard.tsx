@@ -7,7 +7,7 @@ import { Clothing } from '@/api/clothes';
 import { ClothingDetailModal } from '../modals/ClothingDetailModal/ClothingDetailModal';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { useDeleteClothes, useUpdateClothes } from '@/hooks/use-clothes';
-import { useToast } from '@/hooks/use-toast/use-toast';
+import { useToast } from '@/hooks/useToast';
 import { useConfirmation } from '../modals/ConfirmationModal';
 import { deleteConfirmationModalOptions } from './const';
 

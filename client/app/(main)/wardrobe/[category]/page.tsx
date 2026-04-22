@@ -7,15 +7,20 @@ import ClothingCard from '@/components/wardrobe/ClothingCard';
 import WardrobeSidebar from '@/components/wardrobe/WardrobeSidebar';
 import { ChevronLeft, Shirt } from 'lucide-react';
 import { SPECIAL_SECTION_CONFIG } from '@/app/(main)/wardrobe/[category]/const';
+import { useCategories } from '@/hooks/useCategories';
 
 export default function CategoryPage() {
   const params = useParams();
   const router = useRouter();
-  const category = decodeURIComponent(params.category as string);
-  const { data: clothes, isLoading } = useGetClothes();
+  const categoryIdOrSlug = decodeURIComponent(params.category as string);
+  const { data: clothes, isLoading: isLoadingClothes } = useGetClothes();
+  const { data: categories, isLoading: isLoadingCategories } = useCategories();
 
+  const currentCategory = useMemo(() => {
+    return categories?.find(c => c.id === categoryIdOrSlug);
+  }, [categories, categoryIdOrSlug]);
 
-  const specialConfig = SPECIAL_SECTION_CONFIG[category];
+  const specialConfig = SPECIAL_SECTION_CONFIG[categoryIdOrSlug];
 
   const categoryItems = useMemo(() => {
     if (!clothes) return [];
@@ -27,22 +32,24 @@ export default function CategoryPage() {
     // Regular clothing category — hide hidden items
     return clothes.filter(item =>
       !item.isHidden &&
-      (item.category === category)
+      (item.category === categoryIdOrSlug || (currentCategory && item.category === currentCategory.name))
     );
-  }, [clothes, category, specialConfig]);
+  }, [clothes, categoryIdOrSlug, specialConfig, currentCategory]);
+
+  const isLoading = isLoadingClothes || isLoadingCategories;
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
         <p className="mt-4 text-stone-500 font-medium animate-pulse">
-          Loading {specialConfig?.label ?? category}...
+          Loading {specialConfig?.label ?? currentCategory?.name ?? 'Category'}...
         </p>
       </div>
     );
   }
 
-  const pageTitle = specialConfig?.label ?? category;
+  const pageTitle = specialConfig?.label ?? currentCategory?.name ?? 'Category';
   const pageDescription = specialConfig?.description ?? `${categoryItems.length} items in your collection`;
   const EmptyIcon = specialConfig?.Icon ?? Shirt;
   const emptyIconClass = specialConfig?.iconClass ?? 'text-stone-600';
@@ -57,7 +64,7 @@ export default function CategoryPage() {
 
       <div className="hidden md:block">
         <WardrobeSidebar 
-          selectedCategory={category} 
+          selectedCategory={categoryIdOrSlug} 
           onSelectCategory={(cat) => router.push(cat ? `/wardrobe/${cat}` : '/wardrobe')} 
         />
       </div>

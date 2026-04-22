@@ -8,27 +8,48 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 import { CARD_STYLES, MENU_STYLES } from '@/lib/styles/header';
 import { classNames } from '@/lib/styles/classNames';
 import { DROPDOWN_TRANSITION } from '@/lib/styles/header';
+import { useRemoveCategories } from '@/hooks/useCategories/useRemoveCategories';
+import { useConfirmation } from '@/components/modals/ConfirmationModal';
 
 interface WardrobeCategoryProps {
-  category: string;
+  categoryId: string; // The ID of the category (or slug for special sections)
+  categoryName: string; // The name of the category
   items: Clothing[];
-  onOpen: (category: string) => void;
+  onOpen: (id: string) => void;
   titleIcon?: React.ElementType;
   hideMenu?: boolean;
 }
 
-export default function WardrobeCategory({ category, items, onOpen, titleIcon: TitleIcon, hideMenu }: WardrobeCategoryProps) {
+export default function WardrobeCategory({ categoryId, categoryName, items, onOpen, titleIcon: TitleIcon, hideMenu }: WardrobeCategoryProps) {
+  const { mutate: removeCategory } = useRemoveCategories();
+  const { openConfirmation } = useConfirmation()
+
   const previewItems = items.slice(0, 3);
   const count = items.length;
 
   const handleAction = (e: React.MouseEvent, action: string) => {
-    e.stopPropagation();
-    console.log(`${action} category:`, category);
+    console.log(`${action} category:`, categoryName, categoryId);
   };
+
+  const handleRename = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Rename category:', categoryName, categoryId);
+  };
+
+  const handleDeleteCategory = (e: React.MouseEvent) => {
+    openConfirmation({
+      title: 'Delete Category',
+      content: 'Are you sure you want to delete this category?',
+      onConfirm: () => {
+        e.stopPropagation();
+        removeCategory(categoryId);
+      }
+    })
+  }
 
   return (
     <div 
-      onClick={() => onOpen(category)}
+      onClick={() => onOpen(categoryId)}
       className={CARD_STYLES.base}
     >  
       <div className={CARD_STYLES.header}>
@@ -36,7 +57,7 @@ export default function WardrobeCategory({ category, items, onOpen, titleIcon: T
           <div className="flex items-center gap-2">
             {TitleIcon && <TitleIcon className="w-5 h-5 text-stone-400 group-hover:text-primary transition-colors" />}
             <h2 className={CARD_STYLES.title}>
-              {category}
+              {categoryName}
             </h2>
           </div>
         </div>
@@ -78,7 +99,7 @@ export default function WardrobeCategory({ category, items, onOpen, titleIcon: T
                       <MenuItem>
                         {({ focus }) => (
                           <button
-                            onClick={(e) => handleAction(e, 'Edit')}
+                            onClick={handleRename}
                             className={classNames(
                               focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
                               MENU_STYLES.item
@@ -93,7 +114,7 @@ export default function WardrobeCategory({ category, items, onOpen, titleIcon: T
                       <MenuItem>
                         {({ focus }) => (
                           <button
-                            onClick={(e) => handleAction(e, 'Delete')}
+                            onClick={handleDeleteCategory}
                             className={classNames(
                               focus ? MENU_STYLES.itemDanger : MENU_STYLES.itemDangerInactive,
                               MENU_STYLES.item

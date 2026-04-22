@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { SEASONS, Category, Season } from '@fitly/shared';
 import { useSaveClothing } from '@/hooks/use-clothes';
 import { defaultFormValues } from './const';
-import { useToast } from '@/hooks/use-toast/use-toast';
+import { useToast } from '@/hooks/useToast';
 import { useCategories } from '@/hooks/useCategories';
 
 interface AddClothesModalProps {
