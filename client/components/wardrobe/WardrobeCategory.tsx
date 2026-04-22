@@ -37,11 +37,12 @@ export default function WardrobeCategory({ categoryId, categoryName, items, onOp
   };
 
   const handleDeleteCategory = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
     openConfirmation({
       title: 'Delete Category',
       content: 'Are you sure you want to delete this category?',
       onConfirm: () => {
-        e.stopPropagation();
         removeCategory(categoryId);
       }
     })
