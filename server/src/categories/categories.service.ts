@@ -49,4 +49,15 @@ export class CategoriesService {
     await this.categoriesRepository.delete({ id: categoryId, userId });
     return this.findAllByUser(userId);
   }
+
+  async updateUserCategory(
+    userId: string,
+    body: Partial<UserCategory>,
+  ): Promise<UserCategory[]> {
+    const { id, ...updateData } = body;
+    delete updateData.userId;
+
+    await this.categoriesRepository.update({ id, userId }, updateData);
+    return this.findAllByUser(userId);
+  }
 }

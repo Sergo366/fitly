@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Body } from '@nestjs/common';
+import { Controller, Get, Delete, Body, Patch } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { GetCurrentUserId } from '../auth/decorators/get-current-user-id.decorator';
 import { UserCategory } from './user-category.entity';
@@ -18,5 +18,13 @@ export class CategoriesController {
     @Body() body: { categoryId: string },
   ): Promise<UserCategory[]> {
     return this.categoriesService.removeUserCategory(userId, body.categoryId);
+  }
+
+  @Patch('/update-category')
+  async updateCategory(
+    @GetCurrentUserId() userId: string,
+    @Body() body: Partial<UserCategory>,
+  ): Promise<UserCategory[]> {
+    return this.categoriesService.updateUserCategory(userId, body);
   }
 }
