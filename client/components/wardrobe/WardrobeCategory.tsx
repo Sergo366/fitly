@@ -3,13 +3,14 @@
 import React, { Fragment } from 'react';
 import { Clothing } from '@/api/clothes';
 import Image from 'next/image';
-import { ChevronRight, Shirt, MoreVertical, EyeOff, Pencil, Trash2 } from 'lucide-react';
+import { ChevronRight, Shirt, MoreVertical, EyeOff, Eye, Pencil, Trash2 } from 'lucide-react';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { CARD_STYLES, MENU_STYLES } from '@/lib/styles/header';
 import { classNames } from '@/lib/styles/classNames';
 import { DROPDOWN_TRANSITION } from '@/lib/styles/header';
 import { useRemoveCategories } from '@/hooks/useCategories/useRemoveCategories';
 import { useConfirmation } from '@/components/modals/ConfirmationModal';
+import { useUpdateCategories } from '@/hooks/useCategories/useUpdateCategories';
 
 interface WardrobeCategoryProps {
   categoryId: string; // The ID of the category (or slug for special sections)
@@ -18,22 +19,26 @@ interface WardrobeCategoryProps {
   onOpen: (id: string) => void;
   titleIcon?: React.ElementType;
   hideMenu?: boolean;
+  isHidden?: boolean;
 }
 
-export default function WardrobeCategory({ categoryId, categoryName, items, onOpen, titleIcon: TitleIcon, hideMenu }: WardrobeCategoryProps) {
+export default function WardrobeCategory({ categoryId, categoryName, items, onOpen, titleIcon: TitleIcon, hideMenu, isHidden }: WardrobeCategoryProps) {
   const { mutate: removeCategory } = useRemoveCategories();
+  const { mutate: updateCategory }  = useUpdateCategories()
+
   const { openConfirmation } = useConfirmation()
 
   const previewItems = items.slice(0, 3);
   const count = items.length;
 
-  const handleAction = (e: React.MouseEvent, action: string) => {
-    console.log(`${action} category:`, categoryName, categoryId);
+  const toggleHideCategory = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    updateCategory({ id: categoryId, isHidden: !isHidden });
   };
 
   const handleRename = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('Rename category:', categoryName, categoryId);
+    updateCategory({ id: categoryId, name: categoryName });
   };
 
   const handleDeleteCategory = (e: React.MouseEvent) => {
@@ -60,6 +65,12 @@ export default function WardrobeCategory({ categoryId, categoryName, items, onOp
             <h2 className={CARD_STYLES.title}>
               {categoryName}
             </h2>
+            {isHidden && (
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                <EyeOff className="w-3 h-3 text-amber-500" />
+                <span className="text-[9px] font-bold text-amber-500 uppercase tracking-tighter">Hidden</span>
+              </div>
+            )}
           </div>
         </div>
         
@@ -86,14 +97,23 @@ export default function WardrobeCategory({ categoryId, categoryName, items, onOp
                       <MenuItem>
                         {({ focus }) => (
                           <button
-                            onClick={(e) => handleAction(e, 'Hide')}
+                            onClick={toggleHideCategory}
                             className={classNames(
                               focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
                               MENU_STYLES.item
                             )}
                           >
-                            <EyeOff className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
-                            <span>Hide</span>
+                            {isHidden ? (
+                              <>
+                                <Eye className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
+                                <span>Unhide</span>
+                              </>
+                            ) : (
+                              <>
+                                <EyeOff className={classNames(MENU_STYLES.icon, focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive)} />
+                                <span>Hide</span>
+                              </>
+                            )}
                           </button>
                         )}
                       </MenuItem>

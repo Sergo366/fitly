@@ -1,16 +1,17 @@
 import React, { Fragment } from 'react';
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react';
 import { classNames } from '@/lib/styles/classNames';
-import { EyeOff, MoreVertical, Plus } from 'lucide-react';
+import { Eye, EyeOff, MoreVertical, Plus } from 'lucide-react';
 import { DROPDOWN_TRANSITION, MENU_STYLES } from '@/lib/styles/header';
 
-export const WardrobePageMenu = () => {
+interface WardrobePageMenuProps {
+  showHidden: boolean;
+  onToggleShowHidden: () => void;
+}
+
+export const WardrobePageMenu = ({ showHidden, onToggleShowHidden }: WardrobePageMenuProps) => {
   const handleAddCategory = () => {
     console.log('Add category');
-  }
-
-  const handleHideAction = () => {
-    console.log('Hide action');
   }
 
   return (
@@ -35,19 +36,28 @@ export const WardrobePageMenu = () => {
                 <MenuItem>
                   {({ focus }) => (
                     <button
-                      onClick={handleHideAction}
+                      onClick={onToggleShowHidden}
                       className={classNames(
                         focus ? MENU_STYLES.itemActive : MENU_STYLES.itemInactive,
                         MENU_STYLES.item,
                       )}
                     >
-                      <EyeOff
-                        className={classNames(
-                          MENU_STYLES.icon,
-                          focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive,
-                        )}
-                      />
-                      <span>Show hidden</span>
+                      {showHidden ? (
+                        <Eye
+                          className={classNames(
+                            MENU_STYLES.icon,
+                            focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive,
+                          )}
+                        />
+                      ) : (
+                        <EyeOff
+                          className={classNames(
+                            MENU_STYLES.icon,
+                            focus ? MENU_STYLES.iconActive : MENU_STYLES.iconInactive,
+                          )}
+                        />
+                      )}
+                      <span>{showHidden ? 'Hide hidden' : 'Show hidden'}</span>
                     </button>
                   )}
                 </MenuItem>

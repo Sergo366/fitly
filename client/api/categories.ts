@@ -30,3 +30,12 @@ export const removeUserCategory = async (categoryId: string) => {
     console.error('Error removing category:', error);
   }
 }
+
+export const updateUserCategory = async (categoryParams: Partial<Category> & { id: string }) => {
+  try {
+    const response = await apiClient.patch<Category[]>('/categories/update-category', categoryParams);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating category:', error);
+  }
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGetClothes } from '@/hooks/use-clothes';
 import { Clothing } from '@/api/clothes';
@@ -13,6 +13,7 @@ import { WardrobePageMenu } from '@/components/wardrobe/wardrobePageMenu';
 
 export default function WardrobePage() {
   const router = useRouter();
+  const [showHidden, setShowHidden] = useState(false);
   const { data: clothes, isLoading: isLoadingClothes } = useGetClothes();
   const { data: categoriesData, isLoading: isLoadingCategories } = useCategories()
   const isLoading = isLoadingCategories || isLoadingClothes;
@@ -23,10 +24,11 @@ export default function WardrobePage() {
   }, [clothes]);
 
   const groupedClothes = useMemo(() => {
-    const groups: Record<string, { id: string; name: string; items: Clothing[] }> = {};
+    const groups: Record<string, { id: string; name: string; items: Clothing[]; isHidden: boolean }> = {};
 
     categoriesData?.forEach(cat => {
-      groups[cat.id] = { id: cat.id, name: cat.name, items: [] };
+      if (cat.isHidden && !showHidden) return;
+      groups[cat.id] = { id: cat.id, name: cat.name, items: [], isHidden: cat.isHidden };
     });
 
     filteredClothes.forEach((item: Clothing) => {
@@ -42,17 +44,11 @@ export default function WardrobePage() {
       const catObj = categoriesData?.find(c => c.name === categoryIdOrName);
       if (catObj && groups[catObj.id]) {
         groups[catObj.id].items.push(item);
-      } else {
-        // Handle "Other" or unknown - for now just skip or put in a default if exists
-        const defaultCat = categoriesData?.[0]; // placeholder logic
-        if (defaultCat && groups[defaultCat.id]) {
-          // groups[defaultCat.id].items.push(item);
-        }
       }
     });
 
     return groups;
-  }, [categoriesData, filteredClothes]);
+  }, [categoriesData, filteredClothes, showHidden]);
 
   if (isLoading) {
     return (
@@ -97,7 +93,10 @@ export default function WardrobePage() {
                     Manage your personal style collection. Explore categories to see
                     every detail and refine your seasonal looks.
                   </p>
-                  <WardrobePageMenu />
+                  <WardrobePageMenu 
+                    showHidden={showHidden} 
+                    onToggleShowHidden={() => setShowHidden(!showHidden)} 
+                  />
                 </div>
               </div>
             </header>
@@ -109,6 +108,7 @@ export default function WardrobePage() {
                   categoryId={group.id}
                   categoryName={group.name}
                   items={group.items}
+                  isHidden={group.isHidden}
                   onOpen={(id) => router.push(`/wardrobe/${id}`)}
                 />
               ))}
