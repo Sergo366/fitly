@@ -1,0 +1,1 @@
+export { WardrobePageMenu } from './WardrobePageMenu'
